@@ -1,0 +1,724 @@
+.\"                                      -*- nroff -*-
+.\" atool.1 - Manual page for atool.
+.\"
+.\" Copyright (C) 2001, 2002, 2003, 2004, 2005, 2007, 2008,
+.\" 2009, 2011 Oskar Liljeblad
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU Library General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License along
+.\" with this program; if not, write to the Free Software Foundation,
+.\" Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+.\"
+.TH ATOOL "1" "August 8, 2009" "atool"
+.\" Read this file with groff -man -Tascii atool.1
+.SH NAME
+atool \- A script for managing file archives of various types
+.SH SYNOPSIS
+.B atool
+.RI [ OPTION ]... " ARCHIVE " [ FILE ]...
+.br
+.B aunpack
+.RI [ OPTION ]... " ARCHIVE " [ FILE ]...
+.br
+.B apack
+.RI [ OPTION ]... " ARCHIVE " [ FILE ]...
+.br
+.B als
+.RI [ OPTION ]... " ARCHIVE " [ FILE ]...
+.br
+.B acat
+.RI [ OPTION ]... " ARCHIVE " [ FILE ]...
+.br
+.B adiff
+.RI [ OPTION ]... " ARCHIVE " "" ARCHIVE
+.br
+.B arepack
+.RI [ OPTION ]... " OLD-ARCHIVE " "" NEW-ARCHIVE
+.SH DESCRIPTION
+This manual page document describes the \fBatool\fP commands.
+These commands are used for managing file archives of various
+types, such as tar and Zip archives. Each command can be
+executed individually or by giving the appropriate options
+to \fBatool\fP (see \fBOPTIONS\fP below).
+.PP
+\fBaunpack\fP extracts files from an archive. Often one wants
+to extract all files in an archive to a single subdirectory.
+However, some archives contain multiple files in their root
+directories. The aunpack program overcomes this problem by
+first extracting files to a unique (temporary) directory, and
+then moving its contents back if possible. This also prevents
+local files from being overwritten by mistake.
+.PP
+\fBapack\fP creates archives (or compresses files). If no file
+arguments are specified, filenames to add are read from standard in.
+.PP
+\fBals\fP lists files in an archive.
+.PP
+\fBacat\fP extracts files in an archive to standard out.
+.PP
+\fBadiff\fP generates a diff between two archives using
+diff(1).
+.PP
+\fBarepack\fP repacks archives to a different format. It does
+this by first extracting all files of the old archive into a
+temporary directory, then packing all files extracted to
+that directory to the new archive. Use the \-\-each (\-e) option in
+combination with \-\-format (\-F) to repack multiple archives using a
+single invocation of atool. Note that arepack will not remove the old
+archive.
+.PP
+Unless the \fB\-\-format\fP (\fB\-F\fP) option is provided,
+the archive format is determined by the archive file extension. I.e.
+an extension ".tar.gz" or ".tgz" means tar+gzip format. Note that
+the extensions are checked in the order listed in the section
+\fBARCHIVE TYPES\fP below, which is why a file with extension ".tar.gz"
+is considered to a be tar+gzip archive, not a gzip compressed file.
+.SH OPTIONS
+These programs follow the usual GNU command line syntax, with long
+options starting with two dashes (`-').
+A summary of options is included below.
+.TP
+.B \-l, \-\-list
+List files in archive.
+This option is automatically assumed when \fBals\fP is executed.
+.TP
+.B \-x, \-\-extract
+Extract files from archive.
+This option is automatically assumed when \fBaunpack\fP is executed.
+.TP
+.B \-X, \-\-extract-to\fR=\fIPATH\fR
+Extract files from archive to the specified directory. When
+unpacking compressed files, PATH may refer to either a filename
+or an existing directory.
+.TP
+.B \-a, \-\-add
+Create archive.
+This option is automatically assumed when \fBapack\fP is executed.
+.TP
+.B \-c, \-\-cat
+Extract a file from archive to standard out (displaying it on
+screen).
+This option is automatically assumed when \fBacat\fP is executed.
+.TP
+.B \-d, \-\-diff
+Extract two archives and use diff(1) to generate differencies
+between them.
+This option is automatically assumed when \fBadiff\fP is executed.
+.TP
+.B \-e, \-\-each
+For each argument, execute the specified command. This can be used
+to quickly extract, list or create multiple archives (see \fBEXAMPLES\fR
+below). This option can not be used with the cat command.
+.TP
+.B \-F, \-\-format\fR=\fIEXTENSION\fR
+Specify archive format manually (see \fBARCHIVE TYPES\fR below).
+.TP
+.B \-S, \-\-simulate
+Run atool in simulation mode. No changes to the filesystem
+(i.e. writes) will be made, and all commands that would be
+executed are displayed instead. This option can't be combined
+with \fB\-\-explain\fP (since it implies that already).
+
+Note that it is not guaranteed that the commands printed in
+simulation mode will be the same as those executed in non-
+simulation mode. This is because some operations depend on
+what files archives contain, and atool can at this time
+only determine that by extracting archives.
+.TP
+.B \-E, \-\-explain
+Display commands executed by atool. This option can't be combined
+with \fB\-\-simulate\fP.
+.TP
+.B \-p, \-\-page
+Run output through a pager, usually \fBpager\fP unless the environment
+variable \fBPAGER\fP is set.
+.TP
+.B \-f, \-\-force
+When extracting from files, allow overwriting of local files.
+When creating an archive, allow the archive file to be overwritten
+if it already exists. Note that it is possible to add files to
+existing RAR and Zip archives (this is not possible for many
+other formats).
+.TP
+.B \-D, \-\-subdir
+When extracting archives, always create a new directory for
+the archive even if the archive only contains one file in
+its root directory.
+.TP
+.B \-0, \-\-null
+If no file arguments are specified when creating or adding files
+to archives, the list of files will be read from standard in.
+Normally these filenames are separated by newline, but with this
+option they are separated by null-bytes. This is useful with the
+GNU find \-print0 option.
+.TP
+.B \-q, \-\-quiet
+Decrease verbosity level by one. This is subtracted from the
+default verbosity level, or the level specified
+with \fB\-\-verbosity\fP. This option may be specified more than
+once to make atool even less verbose.
+.TP
+.B \-v, \-\-verbose
+Increase verbosity level by one. This is added to the
+default verbosity level, or the level specified
+with \fB\-\-verbosity\fP. This option may be specified more than
+once to make atool even more verbose.
+.TP
+.B \-V, \-\-verbosity\fR=\fILEVEL\fR
+Specify verbosity level. The default level is 1,
+which means "normal verbosity" - e.g. when creating and
+extracting from archives, files will be listed.
+.TP
+.B \-\-config\fR=\fIFILE\fR
+Load configuration from the specified file. When using this
+option, the system-wide and user-wide configuration files
+will not be loaded. If the specified file does not exist or
+can not be read, atool will terminate with an error message.
+.TP
+.B \-o, \-\-option\fR=\fIKEY=VALUE\fR
+Override a configuration option. These are applied after
+reading the configuration files.
+
+You can specify this multiple times to override different options.
+.TP
+
+.B \-O, \-\-format\-option\fR=\fIOPTION\fR
+Send additional options to the archiver command. This can be useful
+when specifying compression options for some archives, e.g.
+.br
+        \fBapack \-F7z \-O-mx=9 archive.7z dir\fP
+.br
+You can specify this multiple times add different options.
+.TP
+.B \-\-save\-outdir\fR=\fIFILE\fR
+When extracting files, save the name of the directory which
+the archive was extracted to to the specified file. If the
+command was not `extract', or the archive was not extracted to
+a new directory, then nothing will be written to the specified
+file. If multiple archives were specified (with \-e), then
+only the last directory that files were extracted to will be
+written to FILE.
+
+This option is used internally (see \fBEXAMPLES\fR below).
+.TP
+.B \-\-help
+Show summary of options.
+.TP
+.B \-\-version
+Output version information and exit.
+.SH ARCHIVE TYPES
+Unless the \-f (\-\-format) option is provided, the archive format
+is determined by the archive file extension. I.e. an extension
+".tar.gz" or ".tgz" means tar+gzip format. Note that the extensions
+are checked in the other listed above, which is why a file
+with extension ".tar.gz" is considered to a tar+gzip archive,
+not a gzip archive.
+.PP
+The diff command is supported whenever the extract command is
+supported.
+.PP
+The supported archive types are:
+.TP
+.RI \fBtar+gzip\fP " " ( .tar.gz ", " .tgz )
+All commands are supported.
+.TP
+.RI \fBtar+bzip\fP " " ( .tar.bz ", " .tbz )
+All commands are supported.
+.TP
+.RI \fBtar+bzip2\fP " " ( .tar.bz2 ", " .tbz2 )
+All commands are supported.
+.TP
+.RI \fBtar+compress\fP " " ( .tar.Z ", " .tZ )
+All commands are supported.
+.TP
+.RI \fBtar+lzop\fP " " ( .tar.lzo ", " .tzo )
+All commands are supported.
+.TP
+.RI \fBtar+lzip\fP " " ( .tar.lz ", " .tlz )
+All commands are supported.
+.TP
+.RI \fBtar+xz\fP " " ( .tar.xz ", " .txz )
+All commands are supported.
+.TP
+.RI \fBtar+7z\fP " " ( .tar.7z ", " .t7z )
+All commands are supported.
+.TP
+.RI \fBtar\fP " " ( .tar )
+All commands are supported.
+.TP
+.RI \fBzip\fP " " ( .zip )
+All commands are supported.
+.TP
+.RI \fBjar\fP " " ( .jar ", " .war )
+List, extract, and add commands are supported.
+Cat is supported if use_jar_program is disabled.
+.TP
+.RI \fBrar\fP " " ( .rar )
+All commands are supported.
+.TP
+.RI \fBlha\fP " " ( .lha ", " .lzh )
+All commands are supported.
+.TP
+.RI \fB7z\fP " " ( .7z )
+Extract, list and add commands are supported.
+.TP
+.RI \fBalzip\fP " " ( .alz )
+Extract command is supported.
+.TP
+.RI \fBace\fP " " ( .ace )
+Extract and list commands are supported.
+.TP
+.RI \fBar\fP " " ( .a )
+All commands are supported.
+.TP
+.RI \fBarj\fP " " ( .arj )
+List, extract and add commands are supported.
+.TP
+.RI \fBarc\fP " " ( .arc )
+All command are supported.
+(Note that arc outputs an extra newline when the cat command is used.)
+.TP
+.RI \fBrpm\fP " " ( .rpm )
+Extract and list commands are supported.
+.TP
+.RI \fBdeb\fP " " ( .deb )
+Extract and list commands are supported.
+.TP
+.RI \fBcab\fP " " ( .cab )
+Cat, extract, and list commands are supported.
+.TP
+.RI \fBgzip\fP " " ( .gz )
+Cat, extract, and add commands are supported.
+.TP
+.RI \fBbzip\fP " " ( .bz )
+Cat, extract, and add commands are supported.
+.TP
+.RI \fBbzip2\fP " " ( .bz2 )
+Cat, extract, and add commands are supported.
+.TP
+.RI \fBcompress\fP " " ( .Z )
+Cat, extract, and add commands are supported.
+.TP
+.RI \fBlzma\fP " " ( .lzma )
+Cat, extract, and add commands are supported.
+.TP
+.RI \fBlzop\fP " " ( .lzo )
+Extract and add commands are supported. The cat command is not supported
+because lzop does not want to extract files to standard out unless the \-f
+flag is given.
+.TP
+.RI \fBlzip\fP " " ( .lz )
+Cat, extract, and add commands are supported.
+.TP
+.RI \fBxz\fP " " ( .xz )
+Cat, extract, and add commands are supported.
+.TP
+.RI \fBrzip\fP " " ( .rz )
+Extract and add commands are supported.
+.TP
+.RI \fBlrzip\fP " " ( .lrz )
+Extract and add commands are supported.
+.TP
+.RI \fB7zip\fP " " ( .7z )
+All commands are supported.
+(Note that 7z refuses to write extracted files to standard out
+if standard out is a terminal. Use \-p or pipe the output
+of atool/acat to a pager when reading in a terminal.)
+.TP
+.RI \fBcpio\fP " " ( .cpio )
+List, extract and add commands are supported.
+
+
+.SH CONFIGURATION
+Since version 0.8.0, atool can read custom configuration files.
+First, hardcoded defaults in the atool program file are evaluated.
+Then system-wide configuration values are loaded from
+\fI/etc/atool.conf\fR if that file exists. Finally, per-user
+configuration values are loaded from \fI.atoolrc\fR in the current
+user's home directory.
+.PP
+The format of the configuration files is simple:
+.IP
+variable value
+.PP
+Here \fBvariable\fR is a variable listed below, and \fBvalue\fR is the
+value to associate the variable with. \fBvariable\fR and \fBvalue\fR
+should be separated with at least one whitespace (space, tab etc). Empty
+lines and lines beginning with # are discarded.
+.PP
+A value of `1' means that the option is enabled, and `0'
+that it is disabled. Strings should not be quoted, as they start at
+the first non-whitespace character and end at the end of the line.
+.PP
+The options are:
+.TP
+.B use_tar_bzip2_option \fR(default: 1)\fR
+Enable this if you use GNU tar and it supports the \fB\-\-bzip2\fP option
+for filtering bzip2'ed files through bzip2. Versions 1.13.6
+or later of GNU tar support \fB\-\-bzip2\fP. Therefore, if you use
+GNU tar earlier than 1.13.6, you will need to disable this option.
+
+This used to be \fBuse_tar_j_option\fP but using \-\-bzip2 is more portable.
+.TP
+.B use_tar_lzip_option \fR(default: 0)\fR
+Enable this if you use GNU tar and it supports the \fB\-\-lzip\fP option
+for filtering lzip'ed files through lzip. Versions 1.23
+or later of GNU tar support \fB\-\-lzip\fP. Therefore, if you use
+GNU tar earlier than 1.23, you will need to disable this option.
+.TP
+.B use_tar_z_option \fR(default: 1)\fR
+Enable this if you use GNU tar and it supports the \fB\-z\fP option
+for filtering gzipped files through gzip. You will need to disable
+this and \fIuse_tar_j_option\fR if you don't use GNU tar.
+
+Disabling these two options doesn't mean that atool can't
+extract bzip2/gzip files. If disabled, atool use a pipe to
+send output from bzip2/gzip to tar instead.
+
+If possible, these options should be enabled since error
+management is better when filtering is done by tar.
+.TP
+.B use_tar_lzma_option \fR(default: 1)\fR
+Enable this if you use GNU tar and it supports the \fB\-\-lzma\fP option
+for filtering lzma compressed files through lzma. Versions 1.20
+or later of GNU tar support \fB\-\-lzma\fP.
+.TP
+.B use_tar_lzop_option \fR(default: 0)\fR
+Enable this if you use GNU tar and it supports the \fB\-\-lzop\fP option
+for filtering lzop compressed files through lzop. Versions 1.21
+or later of GNU tar support \fB\-\-lzop\fP.
+.TP
+.B use_tar_xz_option \fR(default: 0)\fR
+Enable this if you use GNU tar and it supports the \fB\-\-xz\fP option
+for filtering xz compressed files through xz. Versions 1.22
+or later of GNU tar support \fB\-\-xz\fP.
+.TP
+.B use_gzip_for_z \fR(default: 1)\fR
+Enable this if you want to use gzip instead of uncompress when
+decompressing compress'ed files (`.Z' files).
+.TP
+.B use_rar_for_unpack \fR(default: 0)\fR
+Enable this if you want to always use rar instead of unrar
+when possible. This makes atool use the rar command
+(path_rar) even when listing and extracting RAR files.
+.TP
+.B use_arc_for_unpack \fR(default: 0)\fR
+Enable this if you want to always use arc instead of nomarch
+when possible. This makes atool use the arc command
+(path_arc) even when listing and extracting ARC files.
+.TP
+.B use_arj_for_unpack \fR(default: 0)\fR
+Enable this if you want to always use arj instead of unarj
+when possible. This makes atool use the arj command
+(path_arj) even when listing and extracting ARJ files.
+.TP
+.B use_find_cpio_print0 \fR(default: 1)\fR
+Enable this if find supports the \-print0 option and cpio supports
+the \-0 option. Without it, it is impossible/harder to make cpio
+archives of files with newline characters in their names.
+.TP
+.B extract_deb_control \fR(default: 1)\fR
+Debian .deb package files contain control information in a DEBIAN
+directory, especially the package's "control" file. Enable this if
+you want the control information to be exctracted during extraction in
+addition to the normal files.
+.TP
+.B strip_unknown_ext \fR(default: 1)\fR
+Certain types of files are actually archives, but their extensions
+doesn't tell so. Examples are Open Office documents (Zip files) and
+Gnumeric documents (gzip'ed files). Since the extensions of those
+filenames are unknown to atool, they would not be stripped with
+this option set to 0. The output file in that case would be something
+like Unpack-XYZW. Setting this option to 1 will cause the extension
+to be stripped instead.
+.TP
+.B use_pbzip2 \fR(default: 0)\fR
+Enable this if you want to use pbzip2 rather than bzip2.
+Please not that if use_tar_bzip2_option is enabled, then
+bzip2 will be used by tar regardless of the use_pbzip2
+option. So if you want tar to use pbzip2 rather than bzip2,
+set use_pbzip2 to 1 and use_tar_bzip2_option to 0.
+.TP
+.B use_lbzip2 \fR(default: 0)\fR
+Enable this if you want to use lbzip2 rather than bzip2.
+Please not that if use_tar_bzip2_option is enabled, then
+bzip2 will be used by tar regardless of the use_lbzip2
+option. So if you want tar to use lbzip2 rather than bzip2,
+set use_lbzip2 to 1 and use_tar_bzip2_option to 0.
+.TP
+.B use_pigz \fR(default: 0)\fR
+Enable this if you want to use pigz rather than gzip.
+Please not that if use_tar_z_option is enabled, then
+gzip will be used by tar regardless of the use_pigz
+option. So if you want tar to use pigz rather than gzip,
+set use_pigz to 1 and use_tar_z_option to 0.
+.TP
+.B use_plzip \fR(default: 0)\fR
+Enable this if you want to use plzip rather than lzip.
+Please not that if use_tar_lzip_option is enabled, then
+lzip will be used by tar regardless of the use_plzip
+option. So if you want tar to use plzip rather than lzip,
+set use_plzip to 1 and use_tar_lzip_option to 0.
+.TP
+.B use_jar \fR(default: 0)\fR
+Enable this if you want to use jar for managing jar
+archives. If you disable this option, zip will be
+used (which should work just as well, and probably be
+faster too).
+
+This option is disabled by default since extracting
+files to standard out (`cat') is not supported by jar.
+.TP
+.B use_file \fR(default: 1)\fR
+Enable this if you want atool to identify file types
+using file(1) for those files with an unrecognized
+extension (or none at all).
+.TP
+.B use_file_always \fR(default: 0)\fR
+Enable this if you want atool to always identify archives
+using file(1), regardless of the file extension. Please note
+that this currently has some drawbacks, such as not being able
+to identify all archive types (especially tar archives compressed
+with 7zip, lzop, szip etc).
+.TP
+.B tmpdir_name \fR(default: Unpack-%04d)\fR
+atool extracts to a temporary directory created in the current
+directory so that no files are overwritten. This variable
+controlls what name that temporary directory should have.
+
+The `%d' string in this variable will be replaced with a random
+number between 0 and 9999. It is possible change the format
+of this number by using something else than `%d' - see printf(3).
+.TP
+.B tmpfile_name \fR(default: Pack-%04d)\fR
+When using pbzip2, and creating archives, a temporary file need
+to be created. This option controls the name of that file.
+See tmpdir_name for further details on the format.
+.TP
+.B path_pager \fR(default: pager)\fR
+.TP
+.B path_jar \fR(default: jar)\fR
+.TP
+.B path_tar \fR(default: tar)\fR
+.TP
+.B path_zip \fR(default: zip)\fR
+.TP
+.B path_unzip \fR(default: unzip)\fR
+.TP
+.B path_gzip \fR(default: gzip)\fR
+.TP
+.B path_bzip \fR(default: bzip)\fR
+.TP
+.B path_bzip2 \fR(default: bzip2)\fR
+.TP
+.B path_pbzip2 \fR(default: pbzip2)\fR
+.TP
+.B path_compress \fR(default: compress)\fR
+.TP
+.B path_lzma \fR(default: lzma)\fR
+.TP
+.B path_lzop \fR(default: lzop)\fR
+.TP
+.B path_lzip \fR(default: lzip)\fR
+.TP
+.B path_rar \fR(default: rar)\fR
+.TP
+.B path_unrar \fR(default: unrar)\fR
+.TP
+.B path_lbzip2 \fR(default: lbzip2)\fR
+.TP
+.B path_pigz \fR(default: pigz)\fR
+.TP
+.B path_cabextract \fR(default: cabextract)\fR
+.TP
+.B path_7z \fR(default: 7z)\fR
+.TP
+.B path_unalz \fR(default: unalz)\fR
+.TP
+.B path_lha \fR(default: lha)\fR
+.TP
+.B path_unace \fR(default: unace)\fR
+.TP
+.B path_ar \fR(default: ar)\fR
+.TP
+.B path_arj \fR(default: arj)\fR
+.TP
+.B path_unarj \fR(default: unarj)\fR
+.TP
+.B path_arc \fR(default: arc)\fR
+.TP
+.B path_nomarch \fR(default: nomarch)\fR
+.TP
+.B path_rpm \fR(default: rpm)\fR
+.TP
+.B path_rpm2cpio \fR(default: rpm2cpio)\fR
+.TP
+.B path_dpkg_deb \fR(default: dpkg-deb)\fR
+.TP
+.B path_cpio \fR(default: cpio)\fR
+.TP
+.B path_file \fR(default: file)\fR
+.TP
+.B path_find \fR(default: find)\fR
+.TP
+.B path_xargs \fR(default: xargs)\fR
+.TP
+.B path_cat \fR(default: cat)\fR
+.TP
+.B path_diff \fR(default: diff)\fR
+These are all paths to the corresponding programs. It is usually
+best to leave them as is, because that way their locations can be
+looked up from the PATH variable.
+.TP
+.B args_diff \fR(default: \-ru)\fR
+This variable specifies command line arguments to pass to the
+diff command (as specified by path_diff) when using adiff. Space
+characters separate arguments in this string.
+.TP
+.B path_syscfg \fR(default: /etc/atool.conf)\fR
+(This variable can only be set in the atool program file.)
+This variable specifies the directory where the system-wide
+configuration file is located.
+.TP
+.B path_usercfg \fR(default: .atoolrc)\fR
+(This variable can only be set in the atool program file
+and system-wide configuration file.)
+This variable specifies where the user configuration file
+is located. Note that if this filename is relative (i.e. doesn't
+being with `/'), it will be relative to the current user's home
+directory (as determined by the HOME environment variable).
+.TP
+.B default_verbosity \fR(default: 1)\fR
+This is the default verbosity of atool. By using \-q and \-v
+options, the verbosity level can be raised and lowered.
+Level 1 means "normal verbosity" - e.g. when creating and
+extracting from archives, files will be listed.
+.TP
+.B show_extracted \fR(default: 1)\fR
+If this is set to 1, the aunpack command will always show
+what file or directory that was extracted. Otherwise
+that will only be printed if the archive was extracted to
+an unexpected location (as a result of local files already
+existing or the archive having multiple files in its root
+directory).
+
+This can be quite useful in combinatiaon with `default_verbosity 0'.
+Note that this option will have no effect when the \-X option is used
+with aunpack, and it has no effect on compressed files.
+.TP
+.B keep_compressed \fR(default: 1)\fR
+When compressing a file with gzip or bzip2, the original (uncompressed)
+file is usually deleted once it has been compressed. I.e. if you
+compress a file "test" you will end up with only one file, "test.gz".
+With this option set to 1, you will make atool keep the original file
+as well. The original behaviour is achieved by setting this option to 0.
+
+This option also has an equivalent effect on uncompressing compressed
+files. When set to 1, the original (compressed) file will be kept.
+Otherwise it will be deleted.
+
+Note however that this option has no effect when packing up a compressed
+file with the \-X option (for specifying an output directory or file). In
+that case the original file is always kept.
+.TP
+.B decompress_to_cwd \fR(default: 1)\fR
+When decompressing a file with commands such as gzip or bzip2, the
+decompressed file is usually placed in the same directory as the
+compressed file. With this option set to 1, the decompressed file is
+instead placed in the current working directory.
+
+Note that this option has no effect when \-X is used.
+
+.SH ENVIRONMENT VARIABLES
+.B PAGER
+The default pager to use when the \-p/\-\-page option is specified.
+.SH EXAMPLES
+To extract all files from archive `foobar.tar.gz' to a subdirectory
+(or the current directory if it only contains one file):
+.br
+	\fBaunpack foobar.tar.gz\fP
+.PP
+To extract all files from all `.tar.gz' archives in the
+current directory:
+.br
+	\fBaunpack \-e *.tar.gz\fP
+.PP
+To create a zip archive of two files `foo' and `bar':
+.br
+	\fBapack myarchive.zip foo bar\fP
+.PP
+To display the file `baz' in the archive `myarchive.zip'
+through a pager:
+.br
+	\fBacat \-p myarchive.zip baz\fP
+.PP
+To list contents of the rar archive `stuff.rar':
+.br
+	\fBals stuff.rar\fP
+.PP
+To create three archives, `dir1.tar.gz', `dir2.tar.gz' and `dir3.tar.gz',
+so that the first one contains all files in dir1, the second all
+in dir2 and the third all dir3:
+.br
+	\fBapack \-e \-F .tar.gz dir1 dir2 dir3\fP
+.PP
+To show all differences between version 2.4.17 and 2.4.18 of the kernel:
+.br
+	\fBadiff linux-2.4.17.tar.gz linux-2.4.18.tar.gz\fP
+.PP
+To repack all .tar.gz archives in the current directory to .tar.7z (the
+old archive will be kept untouched):
+.br
+	\fBarepack \-F.tar.7z \-e *.tar.gz\fP
+.PP
+Here's a shell function that will make the aunpack command change into the
+directory where files were extracted:
+.br
+	\fBaunpack () {\fP
+.br
+	\fB  TMP=`mktemp /tmp/aunpack.XXXXXXXXXX`\fP
+.br
+	\fB  atool \-x \-\-save-outdir=$TMP "$@"\fP
+.br
+	\fB  DIR="`cat $TMP`"\fP
+.br
+	\fB  [ "$DIR" != "" \-a \-d "$DIR" ] && cd "$DIR"\fP
+.br
+	\fB  rm $TMP\fP
+.br
+	\fB}\fP
+.br
+If you don't have the mktemp program, you can replace the second line with
+(note however that this is not entirely safe)
+.br
+	\fB  TMP="/tmp/atool_outdir.$$"\fP
+.PP
+.SH KNOWN BUGS
+Trying to extract gzip and other compressed files without the .gz (or .bz2
+etc) extension won't work:
+.PP
+  aunpack: foo: format not known, identifying using file
+  aunpack: foo: format is `gzip'
+  gzip: foo: unknown suffix -- ignored
+.PP
+This last error above is generated by \fBgzip \-d foo\fP.
+.PP
+If you find a bug not listed here, please report it to <oskar@osk.mine.nu>.
+.SH REPORTING BUGS
+Report bugs to <\fIoskar@osk.mine.nu\fP>.
+.SH AUTHOR
+The author of \fBatool\fP and this manual page is Oskar Liljeblad <\fIoskar@osk.mine.nu\fP>.
+.SH COPYRIGHT
+Copyright \(co 2001, 2002, 2003, 2004, 2005, 2007, 2008, 2009, 2011, 2012 Oskar Liljeblad
+
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.

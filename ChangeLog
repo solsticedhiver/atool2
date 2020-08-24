@@ -1,0 +1,428 @@
+Sat Sep 28 14:34:47 CEST 2002
+
+	* Release 0.23.0.
+	* This file is no longer being updated. Please see the NEWS file instead.
+
+Wed Sep 11 16:11:55 CEST 2002
+
+	* atool: "s/cwd/getcwd/g"
+	Remove use Cwd;
+
+Sun Sep  8 11:34:34 CEST 2002
+
+	* atool:
+	(runcmds) Check for cpio format.
+	(stripext) Strip cpio extension.
+	(formatext) Format cpio extension.
+	(findformat) Identify cpio archives.
+	(shellexecute) Overcome POSIX bug by setting @_ to ().
+	(readconfig) Read path_cat and path_find.
+
+Sat Jul 13 19:43:23 CEST 2002
+
+	* Release 0.19.0.
+	* atool:
+	New option --save-outdir.
+	(multiarchivecmd) Honor $::opt_save_outdir.
+	* atool.1: Documented --save-outdir, and added example about this.
+
+Sun Jul  7 14:40:43 CEST 2002
+
+	* atool: (runcmds) Add -r to rar.
+
+
+Thu Jul  4 08:54:20 CEST 2002
+
+	* TODO: Cleaned up. Added information about a rules format.
+
+Thu Jul  4 08:45:02 CEST 2002
+
+	* atool.1: Added some formats to list of supported ones.
+	* README: New section supported formats (referencing man page).
+
+Wed Jul  3 15:11:47 CEST 2002
+
+	* Makefile:
+	(PREFIX) New variable. Now defaults to /usr/local instead of /usr.
+	(BINDIR, MANDIR) Use PREFIX.
+	* debian/rules: Set PREFIX=/usr.
+	* atool.spec: Fixed to handle new PREFIX.
+
+Tue Jul  2 21:34:45 CEST 2002
+
+	* Release 0.18.0.
+	* README: Added info about rpm and cpio requirement.
+	* atool:
+	($::cfg_path_rpm) New variable.
+	($::cfg_path_rpm2cpio) New variable.
+	($::cfg_path_cpio) New variable.
+	(runcmds) Handle rpm archives.
+	(stripext) Ditto.
+	(formatext) Ditto.
+	(findformat) Ditto.
+	(readconfig) Load variables mentioned above.
+
+Sat Jun 29 11:30:29 CEST 2002
+
+	* atool:
+	Changed author mail in help and version messages.
+	(quote) New subroutine. Used almost everywhere.
+	(cmdexec) Rewrote to use shell_execute instead.
+	(shell_execute) New subroutine.
+	(findformat) Use the safer three argument version of open.
+	Use $::errmsg instead of $! after call to backticks.
+	(backticks) Cleaned up a little. Put error message in $::errmsg.
+	(readconfig) Use the safer three argument version of open.
+	(unlink_directory) Don't chmod on directories.
+
+Wed May 15 13:47:34 CEST 2002
+
+	* atool.1: (EXAMPLES) Added adiff example.
+
+Wed Apr 24 09:46:37 CEST 2002
+
+	* atool:
+	($::cfg_show_extracted) New variable.
+	(multiarchivecmd) Print if show_extracted.
+	(readconfig) Handle show_extracted.
+	* atool.1:
+	(CONFIGURATION) Documented show_extracted.
+
+Sun Apr 14 23:56:53 CEST 2002
+
+	* Release 0.17.0.
+	* atool:
+	($::cfg_path_unarj) New variable.
+	(runcmds)
+	Handle arj archives.
+	Return return-value of singlearchivecmd.
+	(singlearchivecmd) Return $outdir.
+	(multiarchivecmd)
+	Take a new argument, $needcwd.
+	Change directories correctly if needcwd.
+	(stripext, formatext, findformat) Handle arj format.
+	(readconfig) Handle path_unarj.
+	* atool.1: Document path_unace and path_unarj.
+	* README: (Requirements) Added information about lha and unarj.
+
+Mon Mar  4 12:29:16 CET 2002
+
+	* atool: s/root files/files in root/.
+
+Sun Feb 10 23:06:50 CET 2002
+
+	* Makefile: (install) Use ln -s -f instead of ln -s.
+
+Sat Feb  9 12:24:36 CET 2002
+
+	* Release 0.16.0.
+	* atool:
+	($::cfg_path_unace) New variable.
+	(runcmds) Handle ace format.
+	(stripext) Handle lha, lzh and ace extensions.
+	(formatext) Ditto.
+	(findformat) Ditto. Also fix rar extension.
+	(readconfig) Read path_unace.
+	* README: Add info for unace and URLs for other programs.
+	
+Thu Feb  7 11:51:04 CET 2002
+
+	* Makefile:
+	(debian) Add -b.
+	(rpm) Build with -bb instead of -ba.
+
+Tue Jan 29 12:06:58 CET 2002
+
+	* atool.1: (args_diff) Improved documentation.
+	* Makefile: (clean) Remove more.
+
+Wed Jan  9 12:37:49 CET 2002
+
+	* atool:
+	($::cfg_args_diff) New variable.
+	(main) Use cfg_args_diff arguments.
+	(readconfig) Parse variable.
+	* atool.1:
+	(args_diff) Added documentation.
+	(path_syslog) Updated wording.
+
+Sat Dec 22 12:15:49 CET 2001
+
+	* Release 0.15.0.
+	* atool.spec: New file.
+	* Makefile:
+	(dist) Added atool.spec and TOOL to distribution.
+	(rpm) New target.
+	(debian) Added -sd option.
+	(install) Change owner of created directories.
+	* debian/docs: Added TODO.
+
+Fri Nov 30 11:14:14 CET 2001
+
+	* atool: (multiarchivecmd)
+	Set mode on directories prior to moving, if necessary.
+	Restore mode once moved.
+
+Sat Nov 17 15:39:43 CET 2001
+
+	* Release 0.14.0.
+	* atool:
+	(runcmds) Cleaned up code (creating outdir).
+	(find_comparable_file) New function.
+	(main) Better handling of adiff command.
+	(unlink_directory) Die if chdir '..' fails.
+	(cmdexec) Improved error messages for abnormal exit
+	($::cfg_path_compress) Updated.
+	($::cfg_path_lha) New variable.
+	(runcmds) Handle lha archives.
+	(findformat) Find lha archives.
+	(readconfig) Read path_lha.
+	* atool.1: Document path_lha.
+
+Wed Oct 31 15:38:56 CET 2001
+
+	* atool: Better check for adiff removal confirmation.
+
+Fri Oct 26 10:32:59 CEST 2001
+
+	* Release 0.13.0.
+	* atool:
+	(unlink_recursively) New function
+	(main) Ask when deleting files for adiff, use unlink_recursively.
+	(main, readconfig) Remove path_rm variable.
+	(cmdexec) Take an additional argument, ignore_return.
+	* atool.1: Remove path_rm variable.
+
+Fri Oct 26 00:34:23 CEST 2001
+
+	* atool:
+	(path_diff, path_rm) New configuration variables.
+	(getmode) New command "diff".
+	(main) Added code for new command "diff".
+	(main) Added new option -d, --diff.
+	(runcmds) Returns output directory.
+	(multiarchivecmd) Returns output directory.
+	* atool.1:
+	Added documentation about new configuration variables.
+	Added documentation about new options.
+
+Thu Oct 25 15:08:33 CEST 2001
+
+	* atool.1: Fixed documentation for --help and --version
+	options.
+
+Tue Sep 18 17:41:14 CEST 2001
+
+	* Release 0.12.0.
+	* README, atool.1, debian/changelog, debian/copyright,
+	debian/control: New email adress of author.
+
+Mon Aug 27 16:57:40 CEST 2001
+
+	* TODO: New file.
+	* README: Moved To Do stuff into TODO document.
+
+Sun Aug 19 00:47:36 CEST 2001
+
+	* atool: (cmdexec) Set SIG{__WARN__} prior to execution,
+	and unset after execution.
+
+Mon Aug 13 22:56:41 CEST 2001
+
+	* Release 0.11.0.
+	* atool:
+	Added missing prototype for findformat and stripext.
+	Handle --each option in add mode.
+	(formatext) New function.
+	* atool.1:
+	Updated documentation for --each option.
+	Added example with apack and --each.
+
+Tue Aug  7 12:51:27 CEST 2001
+
+	* atool: (multiarchivecmd) Changed wording `refuse' to `refusing'.
+
+Mon Jul 23 17:09:32 CEST 2001
+
+	* Release 0.10.0.
+	* README, atool.1: Moved `Known Bugs' section from README file
+	to the man-page. Added a note about extracting compressed files
+	without valid extensions.
+
+Sun Jul 22 13:46:19 CEST 2001
+
+	* atool:
+	(findformat) Fixed bug causing gzip, bzip, bzip2 and compress'd
+	files not to be identified correctly.
+
+Thu Jul 19 18:12:35 CEST 2001
+
+	* atool:
+	Added new option, -e, --each.
+	Many changes to accomodate for new --each option.
+	* atool.1:
+	Fixed some omissions in the man-page.
+	Added documentation about --each.
+	Added example section.
+
+Mon Jul 16 11:48:51 CEST 2001
+
+	* Version 0.9.0.
+	* atool:
+	Added new options, -v, --verbose and --verbosity to control
+	verbosity of atool.
+	Improved verbosity control (fixes #99028). Fixed some bugs
+	regarding verbosity level. 
+	Changed behaviour of apack on compressed files.
+	Now uses file's -z option to identify more formats.
+	When identifying using file, now print result of identification.
+	Fixed typo in --help about -V for --explain.
+	Added option --config. Read configuration first after options
+	have been parsed.
+	* README:
+	Now refers to the man-page for usage information.
+	* atool.1:
+	Updated for new options.
+	Included some text previously in README document.
+
+Sun Jul 15 11:15:04 CEST 2001
+
+	* atool:
+	Added somewhat better error messages when a subprocess fails.
+	Remove the temporary directory on exit if possible.
+	Now refuses to overwrite existing files when creating (non-zip
+	and non-rar) archives (unless --force specified).
+
+Thu Jul 12 11:54:52 CEST 2001
+
+	* atool: Will only identify format of regular files.
+
+Thu Jul  5 15:06:26 CEST 2001
+
+	* Version 0.8.0.
+	* atool: Now exit after --version.
+
+Sun Jul  1 11:21:53 CEST 2001
+
+	* atool:
+	(findformat) Lowercase filenames before checking format.
+	Add option terminator `--' to `file' command line.
+	(getmode) Consider --extract-to to be a separate command.
+	(makeoutdir) Fixed random number generation.
+
+Sat Jun 30 00:05:42 CEST 2001
+
+	* atool: Adding missing backslash in help text.
+
+Wed Jun 20 17:00:47 CEST 2001
+
+	* atool: New subroutine "backticks", used instead of `` when
+	identifying file type using "file".
+	* atool: New subroutine "readconfig" to read a configuration
+	file. Called to read /etc/atool.conf and ~/.atoolrc.
+	* atool: Added option use_gzip_for_z.
+	* README: Updated to document configuration options.
+
+Wed Apr 25 10:11:16 CEST 2001	Oskar Liljeblad <osk@hem.passagen.se>
+
+	* atool: Added support for identify some file formats
+	using file(1).
+
+Tue Apr 24 21:14:49 CEST 2001	Oskar Liljeblad <osk@hem.passagen.se>
+
+	* Makefile: Include NEWS file in distribution.
+
+Mon Apr 16 13:35:14 CEST 2001	Oskar Liljeblad <osk@hem.passagen.se>
+
+	* Version 0.7.0.
+	* atool.1: Added .war extension for Jar archives.
+
+Sat Apr  7 16:00:17 CEST 2001	Oskar Liljeblad <osk@hem.passagen.se>
+
+	* atool: Fixed commands for tar archive. The 'f' option
+	to tar was missing, causing output to be written to stdout
+	and input read from stdin.
+
+Thu Apr  5 14:00:03 CEST 2001	Oskar Liljeblad <osk@hem.passagen.se>
+
+	* atool: Added -F as short option alias for --format.
+	* atool (parsefmt): Fixed recognition of manual formats.
+
+Wed Apr  4 17:08:14 CEST 2001	Oskar Liljeblad <osk@hem.passagen.se>
+
+	* atool (parsefmt): Recognize .war as a JAR archive.
+	* atool (stripext): Strip .tar.Z, .tZ, .Z, and .war.
+
+2001-04-04  Oskar Liljeblad <osk@hem.passagen.se>
+
+	* Version 0.6.0.
+	* atool: Complete rewrite. See NEWS file for changes.
+	* NEWS: New file.
+	* debian/docs: Added NEWS.
+
+2001-03-28  Oskar Liljeblad <osk@hem.passagen.se>
+
+	* atool loops when you try to extract to a directory
+	that doesn't exist. This is fixed now.
+	* atool: Fixed commands for .tar archives
+	("f" was missing in options for all commands).
+
+2001-03-28  Oskar Liljeblad <osk@hem.passagen.se>
+
+	* Version 0.5.0 released because of version mistake
+	(by me) on Freshmeat - 0.3.0 was released as 0.4.0.
+
+2001-03-27  Oskar Liljeblad <osk@hem.passagen.se>
+
+	* Version 0.4.0.
+	* debian/*: New files, for making Debian packages
+	of atool.
+	* atool: Included more license text from COPYING.
+	Fixed help text for -X command.
+	Added prototypes for subroutines without them.
+	* README: Included more license text from COPYING.
+	Minor format changes.
+	* atool.1: New man page.
+	* Makefile: Updated for Debian package generation.
+	New rule "debian".
+	Now installs man page.
+
+2001-03-26  Oskar Liljeblad <osk@hem.passagen.se>
+
+	* Added forward function declarations so that the warnings
+	"main::foo() called too early to check prototype" no longer
+	appear when using Perl 5.6.
+
+2001-03-24  Oskar Liljeblad <osk@hem.passagen.se>
+
+	* Version 0.3.0 released.
+	* Use exec instead of system where possible.
+
+2001-03-22  Oskar Liljeblad <osk@hem.passagen.se>
+
+	* Fixes in last release introduced new bugs when extracting files
+	from multi-file archives. "Use of uninitialized value .." would
+	we printed, along with another bogus error. Hopefully these bugs
+	are fixed now.
+	* Added support for jar archives.
+	* Added use_jar_program variable.
+	* --quiet (-q) option is now listed in --help.
+	* README: Better documentation for configuration variables in
+	atool.
+	* Code cleanup: Simplified generation of command lines for tar/zip.
+	* (Internal) New distdiff rule in Makefile for comparing tars of
+	atool.
+	* (Internal) README: Added more things to do.
+
+2001-03-21  Oskar Liljeblad <osk@hem.passagen.se>
+
+	* Version 0.2.0 relesed.
+	* When extracting single compressed files (foo.gz), a temporary
+	extraction subdirectory would be created even though it was not
+	needed. This is now fixed.
+	* Display a message when `list' command is tried on single
+	compressed files (foo.gz etc).
+
+2001-03-17  Oskar Liljeblad <osk@hem.passagen.se>
+
+	* Version 0.1.0: First public release.

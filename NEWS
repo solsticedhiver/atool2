@@ -1,0 +1,369 @@
+2012-04-02: atool 0.39.0 released.
+  Add support for plzip, as well as --lzip in GNU tar 1.23 and later (patch
+  from Dan Serban).
+  Add support for lbzip2 and pigz (patch from Tim Harder).
+  Fix documentation typo (Debian #661636).
+  Updated links in README and on web page (thanks Antonio Diaz).
+
+2011-08-15: atool 0.38.0 released.
+  Fix Mac OS X build time problem (reported by Dave Dribin): Don't use 'sed
+  -r' in makefiles, use 'sed' instead, etc.
+  Apply manpage typo fix patches (from Francois Marier).
+  Fixed bug preventing saved amount of data not to be printed with arepack.
+  Added -O, --format-option option for specifying archiver options.
+  Exit gracefully when specifying an unsupported formats with arepack.
+  Fix xv typo - should be xz (use_tar_xz_option etc) (from polemon).
+  Fix identification of .xpi files as zip (patch by Francois Marier,
+  Debian bug #530812).
+  Fix identification of 7zip files (patch by Bastian Kleineidam,
+  Debian bug #558003).
+
+2009-08-13: atool 0.37.0 released.
+  Added support for lzip and xz (suggested by Vincent Lefevre).
+  Fixed bug in arepack command with tar archives.
+  The number of bytes saved is now printed in 'repack' mode (suggested by
+  Meino Christian Cramer).
+  Don't use -U parameter (to delete original archive) for lzop.
+  Added link to ATrpms repository to home page.
+  Added support for GNU tar's --xv, --lzop, and --lzma options when the
+  corresponding atool options are enabled (use_tar_xv_option,
+  use_tar_lzop_option and use_tar_lzma_option).
+  Better checking of config file variables.
+
+2009-02-26: atool 0.36.0 released.
+  Fix problem not identifying ZIP archives using file (from mollifier).
+  Fix problem with escaping characters in UTF-8 locales.
+  Don't use -r when creating rar archives, it recurses subdirs as expected
+  by default.
+
+2008-06-08: atool 0.35.0 released.
+  Now detect self-extracting ZIP archives using file (suggested by Jens
+  Schleusener).
+  Added "use_file_always" option to always identify using file (suggested
+  by Thomas Link).
+  Now identify compressed files (bzip2, bzip, gzip, compress) when using
+  "use_file" option.
+  Improved error messages (from Ed Avis).
+  Fix manpage hyphens (patch from Francois Marier).
+  Added -o, --option option to change a configuration option.
+  Added support for rzip and lrzip archives.
+  Use '-c' option with compressors such as gzip and bzip2 when piping
+  output.
+  Added support for pbzip2 (added configuration options path_pbzip2 and
+  use_pbzip2).
+
+2008-04-03: atool 0.34.0 released.
+  Added support for lzma (suggested by Ed Avis and Leif Thande, patch from
+  Nick Matteo).
+  Added extra directory.
+  Now using automake.
+
+2007-08-22: atool 0.33.0 released.
+  Change order of arguments in tar commands.
+  Use 'f' option to tar when using archive from stdin/to stdout (by
+  reported by Shotaro Aoyama).
+  Fix configuration file bug: "use_arj_for_unpack" did not work 
+  (reported by Simon Peter).
+  Minor build and documentation updates.
+
+2005-12-13: atool 0.32.0 released.
+  Fixed bug in repack mode: Could not repack a compressed file into an
+  archive, but could (incorrectly) repack an archive to a compressed file
+  (reported by Meino Christian Cramer).
+  Print ellipsis properly in output ("...", not "..") (patch from Ed Avis).
+  Added support for Microsoft Cabinet archives.
+  Ignore waitpid errors on win32 (patch from Ed Avis).
+
+2005-08-08: web page updated.
+  Fixed some typos in the web page and NEWS file (will be updated for next
+  release).
+
+2005-08-08: atool 0.31.0 released.
+  ATTENTION: This release fixes a serious bug which might cause files and
+  directories to be removed in some circumstances when using adiff. I
+  recommend upgrading to the 0.31.0 immediately. If you cannot upgrade, you
+  are safe as long as you do not use the adiff command on untrusted
+  archives.
+  Here are the details: Symbolic links would be followed when temporary
+  directories were removed recursively. Only the adiff command removed
+  directories in this way - the extracted files of the archives it
+  compared. This means that if you ran adiff on an archive containing a
+  symbolic link that pointed to, say, /foo, /foo would be removed
+  recursively! This was due to a missing check for symbolic links. This bug
+  was found by code auditing, and has been fixed in this release.
+  Added arepack command (also -r, --repack) (previously incomplete and
+  disabled, also suggested by Meino Christian Cramer).
+  Added support for 7-Zip'ed TAR archives (.tar.7z) (suggested by Meino
+  Christian Cramer).
+  Implemented cat support for 7-Zip archives.
+  Completed list of supported archive types in the manual page (some were
+  missing).
+  Improve --simulate and --explain.
+  Added support for acat on Debian packages (patch from Peter Valdemar
+  Mørch).
+  Added support for extracting control files from Debian packages as well
+  (patch from Peter Valdemar Mørch, thanks).
+  Fixed some manual page typos.
+
+2005-07-25: atool 0.30.0 released.
+  Added support for 7-Zip archives (.7z) using p7zip (suggested by Meino
+  Christian Cramer).
+  Added support for ALZip archives (.alz) using unalz.
+  Added support for Debian package archives (.deb) files (contributed by
+  Joao Lourenco).
+  Fixed some typos in the manual page (reported by Stephane Jourdois).
+  Added file matches for LHA SFX archives.
+  Updated building of rpm and debian packages.
+  Updated documentation.
+  Got rid of year ranges in copyright.
+
+2004-07-05: atool 0.29.0 released.
+  Added support for ar archive (.a) files (suggested by Wojtek Sczygiol).
+  Improved and cleaned up handling of compressed files (single file
+  archives), resulting in some bugs fixed.
+  Deal with compressed files (.gz, .bz2, ..) differently, fixing some bugs.
+  These files are now extracted to current directory.
+  Implemented new options 'decompress_to_cwd'.
+
+2004-06-18: atool 0.28.0 released.
+  'make install' will now build everything before installing.
+  Use detected perl path in atool executable (reported by Ed Avis).
+  Fixed extraction of files from LHA archives (reported by Goetz Waschk and
+  Matthew Mueller).
+
+2003-11-14: atool 0.27.0 released.
+  Support for autoconf has been added (based on files from Hisham Muhammad,
+  thanks).
+  Added support for ARC files (suggested by Ed Avis).
+  Added support for using the arj command for ARJ archives (previously only
+  unarj was supported).
+  Cleaned up and improved the manual page and README document.
+  Fixed RAR identification from file(1) output.
+  Now uses tar --bzip2 option instead of -j. The use_tar_j_option has been
+  renamed to use_tar_bzip2_option (patch submitted by Ed Avis, thanks).
+  Renamed the use_rar_for_unrar option to use_rar_for_unpack (old options
+  will still work).
+  Bumped copyright year.
+  Removed the distdiff make target.
+
+2003-05-23: atool 0.26.0 released.
+  Added a new configuration option, use_rar_for_unrar (always use rar
+  instead of unrar when possible).
+  Added a new configuration option, strip_unknown_ext (strip unknown
+  extensions). Patch submitted by Götz Waschk - thanks!
+  Tried to make atool more portable by using File::Spec more.
+  Some minor bug fixes for --simulate mode.
+  Cleaned up error messages.
+
+2002-11-08: atool 0.25.0 released.
+  Implemented a new option keep_compressed to control whether the original
+  file should be kept after packing/unpacking compressed files.
+  Cleaned up code for handling compressed files.
+  Now refuses to compress multiple files into one.
+  Don't pass -r option to unrar.
+  Cleaned up and simplified the code a little (remove exec argument).
+  Use unrar instead of rar when not creating RAR archives. A new option,
+  path_unrar was added. (Requested by Götz Waschk.)
+  Use cpio for archives that file(1) reports as "ASCII cpio archive".
+  Replaced 'refuse to overwrite' wording with 'refusing to overwrite'.
+  Updated manual page:
+    Replaced 'single-file-compressor' wording with 'file compressor'.
+    Clarified meaning of PATH value to -X option.
+
+2002-10-09: atool 0.24.0 released.
+  If PAGER is set, use that for default pager instead.
+  Debian and RPM packages now include symlinks to the manpage for aunpack,
+  apack etc too. These symlinks are also installed during make install.
+  Build fixes for RPM package from Götz Waschk (thanks).
+  Don't set root:root owner when installing files in Makefile.
+
+2002-09-28: atool 0.23.0 released.
+  Added new feature: If no file arguments are specified with apack,
+  filenames are read from standard in.
+  Added new option: -0, --null to specify that filenames read from standard
+  in are separated by null-bytes.
+  Fixed tab stop in --help message.
+  Exit with non-zero return code if any command failed.
+  Cleaned up code (add parens around subroutine calls) to prevent weird
+  bugs.
+
+2002-09-17: atool 0.22.0 released.
+  Fixed use_gzip_for_z configuration option name typo (was
+  cfg_use_gzip_for_z).
+  New option use_find_cpio_print0 to make find use -print0 and cpio -0.
+  Added support for lzop archives.
+
+2002-09-16: atool 0.21.0 released.
+  Use POSIX::getcwd instead of Cwd::cwd (fixes warnings with perl 5.8).
+  Fixed some bugs for Perl 5.005 compatibility (reported by Nicholas
+  Piper).
+  Use sysopen instead of three argument open to open some files.
+  Use POSIX::isprint instead of /[[:print:]]/.
+  Added --subdir (-D) option to always extract to subdirectory.
+
+2002-09-08: atool 0.20.0 released.
+  Added support for cpio archives.
+  Fixed bugs with --save-outdir (wouldn't save right directory), and
+  updated manpage.
+  Fixed help message ("current directory" => "specified directory").
+
+2002-07-13: atool 0.19.0 released.
+  Added PREFIX variable to Makefile (patch submitted by Dave Dribin).
+  Updated man page with supported archive formats.
+  Always run rar with the -r (recursive) option.
+  Documented how to make aunpack change into the directory where files were
+  extracted to (feature requested by Brian Hall).
+
+2002-07-02: atool 0.18.0 released.
+  Added support for rpm archives (patch submitted by João Lourenço -
+  thanks!).
+  Added configuration option `show_extracted' to always show what file was
+  extracted. This is also the default behavior now.
+  Added adiff example to manpage.
+  Running atool on files with names beginning with <, >, +, | or other
+  similar characters could potentially have very bad effects on atool (such
+  as files disappearing). This is fixed now.
+  Updated the author's email address in the help and version messages.
+  Improved error messages by quoting all filenames mentioned.
+  No longer change mode on directories before removing them (now considered
+  to be unsafe by myself, despite the fact that I wrote the code originally
+  :).
+  Atool can now be used on files with newline and delete characters in
+  their names. (As a result of this, atool now uses the POSIX perl module.)
+
+2002-04-14: atool 0.17.0 released.
+  Added support for extraction of arj archives.
+  Fixed symlink creation during make install (patch from Brian Hall).
+  Fixed wording ("files in root" instead of "root files").
+  Fixed adiff on compressed files (would have no effect, and would leave an
+  Unpack dir).
+
+2002-02-09: atool 0.16.0 released.
+  Added new option `args_diff' to control diff arguments (previously `-ru'
+  was hardcoded in).
+  Updated wordings in the README.
+  Reformatted NEWS file. :)
+  Improved Makefile somewhat.
+  Fixed identification and some extension-related issues with LHA and RAR.
+  Added support for ace archives (extraction and listing only).
+  Mention URL for some archiver programs in the README.
+
+2001-12-22: atool 0.15.0 released.
+  Fixed a minor bug that would prevent atool from extracting archives with
+  one non-writable root directory properly (reported by Matthew Mueller).
+  Added files for making RPM packages of atool.
+  Added TODO document.
+
+2001-11-17: atool 0.14.0 released.
+  Added support for .lha archives (with lha command).
+  Fixed and improved the adiff command. (It will no longer ask before
+  deleting files.)
+  Changed default path for the compress command to 'compress'.
+  Improved error messages.
+  Some very minor bug fixes.
+
+2001-10-26: atool 0.13.0 released.
+  New command adiff that generates a diff between two archives.
+  Documentation fixes.
+
+2001-09-18: atool 0.12.0 released.
+  Improved error messages when the program to execute does not exist (no
+  more Perl warnings).
+  The author has changed email-address to oskar@osk.mine.nu.
+
+2001-08-13: atool 0.11.0 released.
+  Improved error messages.
+  The --each option can now be used with the add command. (This can be used
+  to create multiple archives at a time.)
+
+2001-08-01: atool 0.10.0 released.
+  New option -e, --each to extract or list multiple archives in one
+  command.
+  Fixed a bug causing gzip, bzip, bzip2 and compress'd files not to be
+  identified correctly.
+  Added sections `Examples' and `Known Bugs' to the manual page.
+
+2001-07-16: atool 0.9.0 released.
+  Rethought the verbosity options. New options: -v, --verbose and -V,
+  --verbosity. Default verbosity level can now be set in configuration
+  file.
+  Changed behaviour of apack on compressed (gzip, bzip2, ..) files (didn't
+  work before).
+  Now file's -z option is used to identify more formats.
+  Included more information in the manual page (about configuration etc).
+  New option --config to load a specific configuration file.
+  The temporary extraction directory is now removed on exit, if it is
+  empty.
+  Now refuses to overwrite existing files when creating archives.
+  Minor bug fixes, error message improvements and typo corrections.
+
+2001-07-05: atool 0.8.0 released.
+  Added support for configuration files. System-wide (/etc/atool.conf) and
+  user (~/.atoolrc) configuration files are supported.
+  Added support for identifying files using file(1). See the README file
+  for details.
+  Symbolic links that refers to non-existant files will no longer be
+  overwritten when extracting files (these symlinks were previously
+  considered to be non-existant themselves).
+  The NEWS file is included again.
+  Added option (use_gzip_for_z) to control whether to use gzip or
+  uncompress to decompress .Z files.
+  Some minor bug fixes.
+
+2001-04-16: atool 0.7.0 released.
+  Fixed all commands for tar archives (output would be written to stdout
+  and input read from stdin by default),
+  When extracting tar.Z archives, extension wouldn't be removed from output
+  directory. This has been fixed now.
+  Manual format (with --format) wouldn't work at all. This is fixed now.
+  Added -F as an alias for --format.
+  Recognize .war as a JAR archive.
+
+2001-04-04: atool 0.6.0 released.
+  Added this NEWS document.
+  Complete rewrite resulting in cleaner and better code.
+  Added support for rar archives.
+  Added support for .Z (compress) compressed files and .tar.Z archives.
+  New option "-p, --page", to send output through pager.
+  New option "-E, --explain" to have atool explain what is being done.
+  New option "-S, --simulate" to have atool simulate commands.
+  Changed "-X, --extract-here" command to "-X, --extract-to" that requires
+  a PATH argument.
+  The temporary extraction directory is now named "Unpack-XXXX", instead of
+  "atool-unpack-XXXX".
+  Added configuration options for setting path of programs to use.
+  Added configuration options for controlling name of temporary extraction
+  directory.
+  Implemented a command line generation engine so that /bin/sh is used only
+  when necessary.
+  Now uses strict.
+
+2001-03-28: atool 0.5.0 released.
+  Rereleased with new version number (0.3.0 was released as 0.4.0 on
+  Freshmeat).
+
+2001-03-27: atool 0.4.0 released.
+  Added forward function declarations to fix "X called to early to check
+  prototype" messages generated by Perl 5.6.
+  Added files for making Debian packages of atool.
+  Fixed help text for -X command.
+  Added prototypes for functions without them.
+  Added manpage for atool.
+  Added more license text from COPYING to the atool source and README file.
+
+2001-03-24: atool 0.3.0 released.
+  Fixed "Use of uninitialized value" messages when extracting from
+  archives.
+  Added support for jar archives, and use_jar_program configuration
+  variable.
+  The "-q, --quiet" option is now listed in help message.
+  Configuration variables are now better documented in the README.
+  Some cleanup of the atool code.
+  Use exec instead of system where possible.
+
+2001-03-21: atool 0.2.0 released.
+  Now creates temporary extraction directory only when necessary.
+  Display a message when list command is run on compressed files.
+
+2001-03-17: atool 0.1.0 released.
+  First public release.

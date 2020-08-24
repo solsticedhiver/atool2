@@ -1,0 +1,52 @@
+%define package @PACKAGE_TARNAME@
+%define version @PACKAGE_VERSION@
+%define release 1
+
+Summary:	A script for managing file archives of various types.
+Name:		%{package}
+Version:	%{version}
+Release:	%{release}
+License:	GPL
+Group:		Applications/Archiving
+Source:		http://savannah.nongnu.org/download/%{package}/%{package}-%{version}.tar.gz
+URL:		http://www.nongnu.org/%{package}/
+Packager:	Oskar Liljeblad <oskar@osk.mine.nu>
+Vendor:		Oskar Liljeblad <oskar@osk.mine.nu>
+BuildRoot:	%{_tmppath}/%{package}-%{version}-%{release}-root
+BuildArch:	noarch
+Requires:	perl
+
+%description
+atool is a script for managing file archives of various types (tar,
+tar+gzip, zip etc).
+
+The main command is aunpack which extracts files from an archive. Did you
+ever extract files from an archive, not checking whether the files were
+located in a subdirectory or in the top directory of the archive, resulting
+in files scattered all over the place? aunpack overcomes this problem by
+first extracting to a new directory, and if there was only a single file in
+the archive, moving that file to the original directory. aunpack also
+prevents local files from being overwritten by mistake.
+
+The other commands provided are apack (to create archives), als (to list
+files in archives), and acat (to extract files to standard out).
+
+%prep
+%setup -q
+
+%build
+./configure --prefix=%{_prefix}
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make DESTDIR=$RPM_BUILD_ROOT install
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root)
+%doc README ChangeLog COPYING NEWS TODO
+%{_prefix}/bin/*
+%{_prefix}/share/man/man1/*
