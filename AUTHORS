@@ -16,4 +16,7 @@ Nick Matteo
 Dan Serban
  - patch for plzip support, as well as --lzip in GNU tar 1.23 and later
 
+solsTiCe d'Hiver
+ - patch for zstd support
+
 For other contributors, check out the NEWS file.

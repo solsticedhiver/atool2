@@ -252,6 +252,9 @@ All commands are supported.
 .RI \fBtar+7z\fP " " ( .tar.7z ", " .t7z )
 All commands are supported.
 .TP
+.RI \fBtar+zstd\fP " " ( .tar.zst ")
+All commands are supported.
+.TP
 .RI \fBtar\fP " " ( .tar )
 All commands are supported.
 .TP
@@ -334,6 +337,9 @@ All commands are supported.
 if standard out is a terminal. Use \-p or pipe the output
 of atool/acat to a pager when reading in a terminal.)
 .TP
+.RI \fBzstd\fP " " ( .zst )
+All commands are supported.
+.TP
 .RI \fBcpio\fP " " ( .cpio )
 List, extract and add commands are supported.
 
@@ -401,6 +407,11 @@ or later of GNU tar support \fB\-\-lzop\fP.
 Enable this if you use GNU tar and it supports the \fB\-\-xz\fP option
 for filtering xz compressed files through xz. Versions 1.22
 or later of GNU tar support \fB\-\-xz\fP.
+.TP
+.B use_tar_zstd_option \fR(default: 1)\fR
+Enable this if you use GNU tar and it supports the \fB\-\-zstd\fP option
+for filtering zstd compressed files through zstd. Versions 1.31
+or later of GNU tar support \fB\-\-zstd\fP.
 .TP
 .B use_gzip_for_z \fR(default: 1)\fR
 Enable this if you want to use gzip instead of uncompress when
@@ -511,6 +522,8 @@ See tmpdir_name for further details on the format.
 .B path_tar \fR(default: tar)\fR
 .TP
 .B path_zip \fR(default: zip)\fR
+.TP
+.B path_zstd \fR(default: zstd)\fR
 .TP
 .B path_unzip \fR(default: unzip)\fR
 .TP
