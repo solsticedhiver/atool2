@@ -126,6 +126,7 @@ $::cfg_path_usercfg         = '.'.$::PROGRAM.'rc';  # user configuration file
 $::cfg_path_xargs           = 'xargs';            # xargs program
 $::cfg_path_xz              = 'xz';               # xz program
 $::cfg_path_zip             = 'zip';              # zip program
+$::cfg_path_zstd            = 'zstd';             # zstd program
 $::cfg_show_extracted       = 1;                  # always show extracted file/directory
 $::cfg_strip_unknown_ext    = 1;                  # strip unknown extensions
 $::cfg_tmpdir_name          = 'Unpack-%04d';      # extraction directory name
@@ -148,6 +149,7 @@ $::cfg_use_tar_lzip_option  = 0;                  # does tar support --lzip?
 $::cfg_use_tar_lzop_option  = 0;                  # does tar support --lzop?
 $::cfg_use_tar_xz_option    = 0;                  # does tar support --xz?
 $::cfg_use_tar_z_option     = 1;                  # does tar support -z?
+$::cfg_use_tar_zstd_option  = 1;                  # does tar support --zstd?
 
 # Global variables
 $::basename = quote(File::Basename::basename($0));
@@ -408,7 +410,7 @@ else {
 # Execute an atool command. This is where it all happens.
 # If mode is 'extract', returns the directory (or only file)
 # which was extracted.
-# If forceformat is undef, the format will be detected from 
+# If forceformat is undef, the format will be detected from
 # $::opt_format or the filename.
 sub runcmds($$$;@) {
   my ($mode, $format, $archive, @args) = @_;
@@ -547,6 +549,18 @@ sub runcmds($$$;@) {
       push @cmd, $::cfg_path_lzma, '-cd', $archive, ['|']     if $mode ne 'add';
       push @cmd, maketarcmd('-', $outdir, $mode, 'f'), @args;
       push @cmd, ['|'], $::cfg_path_lzma, '-c', ['>'], $archive if $mode eq 'add';
+    }
+    @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
+  }
+  elsif ($format eq 'tar+zstd') {
+    return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
+    if ($::cfg_use_tar_zstd_option) {
+      push @cmd, maketarcmd($archive, $outdir, $mode, 'f', '--zstd'), @args;
+    } else {
+      push @cmd, $::cfg_path_zstd, '-od', $archive, ['|']     if $mode ne 'add';
+      push @cmd, maketarcmd('-', $outdir, $mode, 'f'), @args;
+      push @cmd, ['|'], $::cfg_path_zstd, '-o', ['>'], $archive if $mode eq 'add';
     }
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
@@ -879,6 +893,9 @@ sub runcmds($$$;@) {
   elsif ($format eq 'lrzip') {
     return singlearchivecmd($archive, $::cfg_path_lrzip, $format, $mode, 0, @args);
   }
+  elsif ($format eq 'zstd') {
+    return singlearchivecmd($archive, $::cfg_path_zstd, $format, $mode, 0, @args);
+  }
 
   return undef;
 }
@@ -898,7 +915,7 @@ sub getmode() {
   if (de($::opt_cmd_list)
       + de($::opt_cmd_cat)
       + de($::opt_cmd_extract)
-      + de($::opt_cmd_add) 
+      + de($::opt_cmd_add)
       + de($::opt_cmd_extract_to)
       + de($::opt_cmd_diff)
       + de($::opt_cmd_repack) > 1) {
@@ -1051,7 +1068,7 @@ sub maketarcmd($$$$@) {
 # be quoted.
 sub cmdexec($@) {
   my ($ignret, @cmd) = @_;
-  
+
   if ($::opt_explain || $::opt_simulate) {
     my $spec = join(' ', map { ref $_ ? @{$_} : shquotemeta $_ } @cmd);
     explain quote($spec)."\n";
@@ -1068,7 +1085,7 @@ sub cmdexec($@) {
     warn "$::basename: ".quote($cmds).": abnormal exit (exit code $?)\n";
     return 0;
   }
-  
+
   if (!$ignret && $? >> 8 != 0) {
     warn "$::basename: ".quote($cmds).": non-zero return-code\n";
     return 0;
@@ -1348,6 +1365,7 @@ sub formatext($) {
   return '.tar.lz'   if $format eq 'tar+lzip';
   return '.tar.xz'   if $format eq 'tar+xz';
   return '.tar.Z'    if $format eq 'tar+compress';
+  return '.tar.zst'  if $format eq 'tar+zstd';
   return '.tar'      if $format eq 'tar';
   return '.bz2'      if $format eq 'bzip2';
   return '.lzma'     if $format eq 'lzma';
@@ -1355,6 +1373,7 @@ sub formatext($) {
   return '.alz'      if $format eq 'alzip';
   return '.bz'       if $format eq 'bzip';
   return '.gz'       if $format eq 'gzip';
+  return '.zst'      if $format eq 'zstd';
   return '.lzo'      if $format eq 'lzop';
   return '.lz'       if $format eq 'lzip';
   return '.xz'       if $format eq 'xzip';
@@ -1392,6 +1411,7 @@ sub issingleformat($) {
   return 1 if $fmt eq 'xz';
   return 1 if $fmt eq 'rzip';
   return 1 if $fmt eq 'lrzip';
+  return 1 if $fmt eq 'zstd';
   return 0;
 }
 
@@ -1407,6 +1427,7 @@ sub findformat($$) {
     ['tar+gzip',       qr/^(GNU|POSIX) tar archive \(gzip compressed data(\W|$)/],
     ['tar+bzip',       qr/^(GNU|POSIX) tar archive \(bzip compressed data(\W|$)/],
     ['tar+compress',   qr/^(GNU|POSIX) tar archive \(compress'd data(\W|$)/],
+    ['tar+zstd',       qr/^(GNU|POSIX) tar archive \(Zstandard compressed data(\W|$)/],
     ['tar',            qr/^(GNU|POSIX) tar archive(\W|$)/],
     ['zip',            qr/ \(Zip archive data[^)]*\)$/],
     ['zip',            qr/^Zip archive data(\W|$)/],
@@ -1440,6 +1461,7 @@ sub findformat($$) {
     ['bzip',           qr/^bzip compressed data(\W|$)/],
     ['gzip',           qr/^gzip compressed data(\W|$)/],
     ['compress',       qr/^compress'd data(\W|$)/],
+    ['zstd',           qr/^Zstandard compressed data(\W|$)/],
   );
   my @fileextensions = (
     ['tar+7z',         qr/(\.tar\.7z|\.t7z)$/],
@@ -1451,6 +1473,7 @@ sub findformat($$) {
     ['tar+lzma',       qr/(\.tar\.lzma|\.tlzma)$/],
     ['tar+lzop',       qr/(\.tar\.lzo|\.tzo)$/],
     ['tar+xz',         qr/(\.tar\.xz|\.txz)$/],
+    ['tar+zstd',       qr/(\.tar\.zst)$/],
 
     ['7z',             qr/\.7z$/],
     ['ace',            qr/\.ace$/],
@@ -1477,6 +1500,7 @@ sub findformat($$) {
     ['tar',            qr/\.tar$/],
     ['xz',             qr/\.xz$/],
     ['zip',            qr/\.zip$/],
+    ['zstd',           qr/\.zst$/],
   );
 
   if ($manual) {
@@ -1493,6 +1517,7 @@ sub findformat($$) {
     $spec =~ s/alzip/alz/;
     $spec =~ s/compress/Z/;
     $spec =~ s/^ar$/a/;
+    $spec =~ s/zstd/zst/;
   }
   if (!$::cfg_use_file_always) {
     foreach my $formatinfo (@fileextensions) {
@@ -1634,6 +1659,7 @@ sub set_config_option($$$) {
     'path_xargs'              => [ 'option', \$::cfg_path_xargs, qr/.*/ ],
     'path_xz'                 => [ 'option', \$::cfg_path_xz, qr/.*/ ],
     'path_zip'                => [ 'option', \$::cfg_path_zip, qr/.*/ ],
+    'path_zstd'               => [ 'option', \$::cfg_path_zstd, qr/.*/ ],
     'show_extracted'          => [ 'option', \$::cfg_show_extracted, qr/^(0|1)$/ ],
     'strip_unknown_ext'       => [ 'option', \$::cfg_strip_unknown_ext, qr/^(0|1)$/ ],
     'tmpdir_name'             => [ 'option', \$::cfg_tmpdir_name, qr/.*/ ],
@@ -1655,6 +1681,7 @@ sub set_config_option($$$) {
     'use_tar_lzma_option'     => [ 'option', \$::cfg_use_tar_lzma_option, qr/^(0|1)$/ ],
     'use_tar_lzop_option'     => [ 'option', \$::cfg_use_tar_lzop_option, qr/^(0|1)$/ ],
     'use_tar_xz_option'       => [ 'option', \$::cfg_use_tar_xz_option, qr/^(0|1)$/ ],
+    'use_tar_zstd_option'     => [ 'option', \$::cfg_use_tar_zstd_option, qr/^(0|1)$/ ],
     'use_tar_j_option'        => [ 'obsolete', 'use_tar_bzip2_option' ],
     'use_tar_z_option'        => [ 'option', \$::cfg_use_tar_z_option, qr/^(0|1)$/ ],
   );
