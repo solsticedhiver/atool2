@@ -1,4 +1,4 @@
-AC_INIT(atool, 0.39.0, oskar@osk.mine.nu)
+AC_INIT([atool],[0.39.0],[oskar@osk.mine.nu])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([atool])
 AC_CONFIG_AUX_DIR([build-aux])
