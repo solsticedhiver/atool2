@@ -1473,7 +1473,7 @@ sub findformat($$) {
     ['tar+lzma',       qr/(\.tar\.lzma|\.tlzma)$/],
     ['tar+lzop',       qr/(\.tar\.lzo|\.tzo)$/],
     ['tar+xz',         qr/(\.tar\.xz|\.txz)$/],
-    ['tar+zstd',       qr/(\.tar\.zst)$/],
+    ['tar+zstd',       qr/(\.tar\.zst|\.tzst)$/],
 
     ['7z',             qr/\.7z$/],
     ['ace',            qr/\.ace$/],
