@@ -17,7 +17,7 @@ dist_bin_SCRIPTS = $(script_files)
 
 $(script_stamp_files): .%-stamp: % $(srcdir)/configure.ac
 	touch `basename "$<"`
-	sed "1s|[^ ]*|$(PERL_SHEBANG)|;/^\\$$::SYSCONFDIR = /s|'.*'|'$(SYSCONFDIR)'|;/^\\$$::PACKAGE = /s/'.*'/'$(PACKAGE)'/;/^\\$$::VERSION = /s/'.*'/'$(PACKAGE_VERSION)'/;/^\\$$::BUG_EMAIL = /s/'.*'/'$(PACKAGE_BUGREPORT)'/" < $< > `basename $<.tmp` \
+	sed "1s|[^ ]*|$(PERL_SHEBANG)|;/^\\$$::SYSCONFDIR = /s|'.*'|'$(SYSCONFDIR)'|;/^\\$$::PACKAGE = /s/'.*'/'$(PACKAGE)'/;/^\\$$::VERSION = /s/'.*'/'$(PACKAGE_VERSION)'/;/^\\$$::BUG_URL = /s/'.*'/'$(PACKAGE_BUGREPORT)'/" < $< > `basename $<.tmp` \
 	  && mv `basename "$<"` .`basename "$<-old"` \
 	  && mv `basename "$<.tmp"` `basename "$<"`
 	chmod a+x `basename "$<"`
