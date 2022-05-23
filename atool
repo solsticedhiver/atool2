@@ -75,7 +75,7 @@ sub set_config_option($$$);
 $::SYSCONFDIR = '/usr/local/etc'; # This line is automatically updated by make
 $::PACKAGE = 'atool'; # This line is automatically updated by make
 $::VERSION = '0.39.0'; # This line is automatically updated by make
-$::BUG_EMAIL = 'oskar@osk.mine.nu'; # This line is automatically updated by make
+$::BUG_URL = 'https://github.com/solsticedhiver/atool/issues'; # This line is automatically updated by make
 $::PROGRAM = $::PACKAGE;
 
 # Configuration options and their built-in defaults
@@ -237,7 +237,7 @@ Options:
 Archive format (for --format) may be specified either as a
 file extension ("tar.gz") or as "tar+gzip".
 
-Report bugs to Oskar Liljeblad <$::BUG_EMAIL>.
+Report bugs to $::BUG_URL.
 _END_
   exit;
 }
