@@ -455,7 +455,7 @@ sub runcmds($$$;@) {
       push @cmd, ['|'], $::cfg_path_bzip2, '-c', ['>'], $archive if $mode eq 'add';
     }
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'tar+gzip') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -471,7 +471,7 @@ sub runcmds($$$;@) {
       push @cmd, ['|'], $::cfg_path_gzip, '-c', ['>'], $archive if $mode eq 'add';
     }
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'tar+bzip') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -479,7 +479,7 @@ sub runcmds($$$;@) {
     push @cmd, maketarcmd('-', $outdir, $mode, 'f'), @args;
     push @cmd, ['|'], $::cfg_path_bzip, '-c', ['>'], $archive if $mode eq 'add';
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'tar+compress') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -491,7 +491,7 @@ sub runcmds($$$;@) {
     push @cmd, maketarcmd('-', $outdir, $mode, 'f'), @args;
     push @cmd, ['|'], $::cfg_path_compress, '-c', ['>'], $archive if $mode eq 'add';
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'tar+lzop') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -503,7 +503,7 @@ sub runcmds($$$;@) {
       push @cmd, ['|'], $::cfg_path_lzop, '-c', ['>'], $archive if $mode eq 'add';
     }
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'tar+lzip') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -519,7 +519,7 @@ sub runcmds($$$;@) {
       push @cmd, ['|'], $::cfg_path_lzip, '-c', ['>'], $archive if $mode eq 'add';
     }
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'tar+xz') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -531,7 +531,7 @@ sub runcmds($$$;@) {
       push @cmd, ['|'], $::cfg_path_xz, '-c', ['>'], $archive if $mode eq 'add';
     }
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'tar+7z') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -539,7 +539,7 @@ sub runcmds($$$;@) {
     push @cmd, maketarcmd('-', $outdir, $mode, 'f'), @args;
     push @cmd, ['|'], $::cfg_path_7z, 'a', '-si', $archive if $mode eq 'add';
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'tar+lzma') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -551,7 +551,7 @@ sub runcmds($$$;@) {
       push @cmd, ['|'], $::cfg_path_lzma, '-c', ['>'], $archive if $mode eq 'add';
     }
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'tar+zstd') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -563,13 +563,13 @@ sub runcmds($$$;@) {
       push @cmd, ['|'], $::cfg_path_zstd, '-o', ['>'], $archive if $mode eq 'add';
     }
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'tar') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     push @cmd, maketarcmd($archive, $outdir, $mode, 'f'), @args;
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'jar' && $::cfg_use_jar) {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -586,7 +586,7 @@ sub runcmds($$$;@) {
     push @cmd, "c$opts" if $mode eq 'add';
     push @cmd, $archive, @args;
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'jar' || $format eq 'zip') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -604,7 +604,7 @@ sub runcmds($$$;@) {
     push @cmd, '-q' if $::opt_verbosity == 0;
     push @cmd, $archive, @args;
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 0, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 0, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'rar') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -624,7 +624,7 @@ sub runcmds($$$;@) {
     push @cmd, tailslash($outdir) if $mode eq 'extract';
     push @cmd, tailslash($::opt_cmd_extract_to) if $mode eq 'extract-to';
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 0, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 0, 0, 0, \@args, @cmd);
   }
   elsif ($format eq '7z') {
     # 7z has the -so option for writing data to stdout, but it doesn't
@@ -642,7 +642,7 @@ sub runcmds($$$;@) {
     push @cmd, 'x', '-o'.$outdir if $mode eq 'extract';
     push @cmd, 'x', '-o'.$::opt_cmd_extract_to if $mode eq 'extract-to';
     push @cmd, @::opt_format_options, $archive, @args;
-    return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'cab') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -659,7 +659,7 @@ sub runcmds($$$;@) {
     push @cmd, $archive;
     push @cmd, '--filter';
     push @cmd, @args;
-    return multiarchivecmd($archive, $outdir, $mode, 0, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 0, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'alzip') {
     if ($mode eq 'cat' || $mode eq 'add' || $mode eq 'list') {
@@ -671,7 +671,7 @@ sub runcmds($$$;@) {
     push @cmd, $archive;
     push @cmd, $outdir if $mode eq 'extract';
     push @cmd, $::opt_cmd_extract_to if $mode eq 'extract-to';
-    return multiarchivecmd($archive, $outdir, $mode, 0, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 0, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'lha') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -685,7 +685,7 @@ sub runcmds($$$;@) {
     push @cmd, 'p' if $mode eq 'cat';
     push @cmd, $archive, @args;
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 0, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 0, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'ace') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -702,7 +702,7 @@ sub runcmds($$$;@) {
     push @cmd, tailslash($outdir) if $mode eq 'extract';
     push @cmd, tailslash($::opt_cmd_extract_to) if $mode eq 'extract-to';
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 0, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 0, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'arj') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -720,7 +720,7 @@ sub runcmds($$$;@) {
       push @cmd, tailslash($outdir) if $mode eq 'extract';
       push @cmd, tailslash($::opt_cmd_extract_to) if $mode eq 'extract-to';
       @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-      return multiarchivecmd($archive, $outdir, $mode, 0, 0, \@args, @cmd);
+      return multiarchivecmd($archive, $outdir, $mode, 0, 0, 0, \@args, @cmd);
     } else {
       push @cmd, $::cfg_path_unarj;
       # XXX: cat mode might work for arj archives, but it extract to stderr!
@@ -732,7 +732,7 @@ sub runcmds($$$;@) {
       push @cmd, makeabsolute($archive) if ($mode eq 'extract' || $mode eq 'extract-to');
       push @cmd, @args;
       @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-      return multiarchivecmd($archive, $outdir, $mode, 0, 1, \@args, @cmd);
+      return multiarchivecmd($archive, $outdir, $mode, 0, 1, 0, \@args, @cmd);
     }
   }
   elsif ($format eq 'arc') {
@@ -756,7 +756,7 @@ sub runcmds($$$;@) {
     push @cmd, makeabsolute($archive) if ($mode eq 'extract' || $mode eq 'extract-to');
     push @cmd, @args;
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
-    return multiarchivecmd($archive, $outdir, $mode, 0, 1, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 0, 1, 0, \@args, @cmd);
   }
   elsif ($format eq 'rpm') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -765,14 +765,14 @@ sub runcmds($$$;@) {
       push @cmd, '-qlp';
       push @cmd, '-v' if $::opt_verbosity >= 1;
       push @cmd, $archive, @args;
-      return multiarchivecmd($archive, $outdir, $mode, 0, 0, \@args, @cmd);
+      return multiarchivecmd($archive, $outdir, $mode, 0, 0, 0, \@args, @cmd);
     }
     elsif ($mode eq 'extract' || $mode eq 'extract-to') {
       push @cmd, $::cfg_path_rpm2cpio;
       push @cmd, makeabsolute($archive);
       push @cmd, ['|'];
       push @cmd, $::cfg_path_cpio, '-imd', '--quiet', @args;
-      return multiarchivecmd($archive, $outdir, $mode, 0, 1, \@args, @cmd);
+      return multiarchivecmd($archive, $outdir, $mode, 0, 1, 0, \@args, @cmd);
     }
     else { # add and cat
       # FIXME: I guess cat could work too, but it would require that we
@@ -806,7 +806,7 @@ sub runcmds($$$;@) {
         push @cmd, File::Spec->catdir($::opt_cmd_extract_to, 'DEBIAN') if $mode eq 'extract-to';
       }
     }
-    return multiarchivecmd($archive, $outdir, $mode, 0, 0, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 0, 0, 0, \@args, @cmd);
   }
   elsif ($format eq 'ar') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -818,7 +818,7 @@ sub runcmds($$$;@) {
     # Don't use v(erbose) with cat command because ar would add "\n<member data>\n\n" to output
     push @cmd, 'p' if $mode eq 'cat';
     push @cmd, makeabsolute($archive), @args;
-    return multiarchivecmd($archive, $outdir, $mode, 1, 1, \@args, @cmd);
+    return multiarchivecmd($archive, $outdir, $mode, 1, 1, 0, \@args, @cmd);
   }
   elsif ($format eq 'cpio') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
@@ -826,13 +826,13 @@ sub runcmds($$$;@) {
       push @cmd, $::cfg_path_cat, $archive, ['|'];
       push @cmd, $::cfg_path_cpio, '-t';
       push @cmd, '-v' if $::opt_verbosity >= 1;
-      return multiarchivecmd($archive, $outdir, $mode, 0, 0, \@args, @cmd);
+      return multiarchivecmd($archive, $outdir, $mode, 0, 0, 0, \@args, @cmd);
     }
     elsif ($mode eq 'extract' || $mode eq 'extract-to') {
       push @cmd, $::cfg_path_cat, makeabsolute($archive), ['|'];
       push @cmd, $::cfg_path_cpio, '-i';
       push @cmd, '-v' if $::opt_verbosity >= 1;
-      return multiarchivecmd($archive, $outdir, $mode, 0, 1, \@args, @cmd);
+      return multiarchivecmd($archive, $outdir, $mode, 0, 1, 0, \@args, @cmd);
     }
     elsif ($mode eq 'add') {
       if (@args == 0) {
@@ -850,7 +850,7 @@ sub runcmds($$$;@) {
         push @cmd, '-v' if $::opt_verbosity >= 1;
         push @cmd, ['>'], $archive;
       }
-      return multiarchivecmd($archive, $outdir, $mode, 1, 1, \@args, @cmd);
+      return multiarchivecmd($archive, $outdir, $mode, 1, 1, 0, \@args, @cmd);
     }
     else { # cat
       warn "$::basename: ".quote($archive).": $mode command not supported for $format archives\n";
@@ -1164,7 +1164,7 @@ sub shquotemeta($) {
   return $str;
 }
 
-# multiarchivecmd(archive, outdir, mode, create, needcwd, argref, cmdspec)
+# multiarchivecmd(archive, outdir, mode, create, needcwd, ignore_return, argref, cmdspec)
 # Execute a command for multi-file archives.
 # The `create' argument controls whether the archive
 # will be created (1) or just added to (0) if mode is "add".
@@ -1172,7 +1172,7 @@ sub shquotemeta($) {
 # which was extracted.
 # If needcwd is true, the outdir must be changed to.
 sub multiarchivecmd($$$$@) {
-  my ($archive, $outdir, $mode, $create, $needcwd, $argref, @cmd) = @_;
+  my ($archive, $outdir, $mode, $create, $needcwd, $ignret, $argref, @cmd) = @_;
   my @args = @{$argref};
 
   if ($mode eq 'cat' && @args == 0) {
@@ -1206,7 +1206,7 @@ sub multiarchivecmd($$$$@) {
   }
 
   if ($mode ne 'extract') {
-    cmdexec(0, @cmd) || return undef;
+    cmdexec($ignret, @cmd) || return undef;
     if (defined $olddir) {
       warn "cd ", quote($olddir), "\n" if $::opt_explain || $::opt_simulate;
       if (!$::opt_simulate && !chdir($olddir)) {
@@ -1218,7 +1218,7 @@ sub multiarchivecmd($$$$@) {
     return 1;
   }
 
-  if (!cmdexec(0, @cmd)) {
+  if (!cmdexec($ignret, @cmd)) {
     if (defined $olddir) {
       warn "cd ", quote($olddir), "\n" if $::opt_explain || $::opt_simulate;
       if (!$::opt_simulate && !chdir($olddir)) {
