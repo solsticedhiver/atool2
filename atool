@@ -426,7 +426,7 @@ sub runcmds($$$;@) {
 
   my @cmd;
   my $outdir;
-  if ($format eq 'tar+bzip2') {
+  if ($format eq 'tar+bzip2' || $format eq 'cbt+bzip2') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     if ($::cfg_use_tar_bzip2_option) {
       push @cmd, maketarcmd($archive, $outdir, $mode, 'f', '--bzip2'), @args;
@@ -457,7 +457,7 @@ sub runcmds($$$;@) {
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
   }
-  elsif ($format eq 'tar+gzip') {
+  elsif ($format eq 'tar+gzip' | $format eq 'cbt+gzip') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     if ($::cfg_use_tar_z_option) {
       push @cmd, maketarcmd($archive, $outdir, $mode, 'zf'), @args;
@@ -473,7 +473,7 @@ sub runcmds($$$;@) {
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
   }
-  elsif ($format eq 'tar+bzip') {
+  elsif ($format eq 'tar+bzip' | $format eq 'cbt+bzip') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     push @cmd, $::cfg_path_bzip, '-cd', $archive, ['|'] if $mode ne 'add';
     push @cmd, maketarcmd('-', $outdir, $mode, 'f'), @args;
@@ -481,7 +481,7 @@ sub runcmds($$$;@) {
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
   }
-  elsif ($format eq 'tar+compress') {
+  elsif ($format eq 'tar+compress' | $format eq 'cbt+compress') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     if ($::cfg_use_gzip_for_z) {
       push @cmd, $::cfg_path_gzip, '-cd', $archive, ['|'] if $mode ne 'add';
@@ -493,7 +493,7 @@ sub runcmds($$$;@) {
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
   }
-  elsif ($format eq 'tar+lzop') {
+  elsif ($format eq 'tar+lzop' | $format eq 'cbt+lzop') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     if ($::cfg_use_tar_lzop_option) {
       push @cmd, maketarcmd($archive, $outdir, $mode, 'f', '--lzop'), @args;
@@ -505,7 +505,7 @@ sub runcmds($$$;@) {
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
   }
-  elsif ($format eq 'tar+lzip') {
+  elsif ($format eq 'tar+lzip' | $format eq 'cbt+lzip') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     if ($::cfg_use_tar_lzip_option) {
       push @cmd, maketarcmd($archive, $outdir, $mode, 'f', '--lzip'), @args;
@@ -521,7 +521,7 @@ sub runcmds($$$;@) {
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
   }
-  elsif ($format eq 'tar+xz') {
+  elsif ($format eq 'tar+xz' | $format eq 'cbt+xz') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     if ($::cfg_use_tar_xz_option) {
       push @cmd, maketarcmd($archive, $outdir, $mode, 'f', '--xz'), @args;
@@ -533,7 +533,7 @@ sub runcmds($$$;@) {
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
   }
-  elsif ($format eq 'tar+7z') {
+  elsif ($format eq 'tar+7z' | $format eq 'cbt+7z') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     push @cmd, $::cfg_path_7z, 'x', '-so', $archive, ['|']  if $mode ne 'add';
     push @cmd, maketarcmd('-', $outdir, $mode, 'f'), @args;
@@ -541,7 +541,7 @@ sub runcmds($$$;@) {
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
   }
-  elsif ($format eq 'tar+lzma') {
+  elsif ($format eq 'tar+lzma' | $format eq 'cbt+lzma') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     if ($::cfg_use_tar_lzma_option) {
       push @cmd, maketarcmd($archive, $outdir, $mode, 'f', '--lzma'), @args;
@@ -553,7 +553,7 @@ sub runcmds($$$;@) {
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
   }
-  elsif ($format eq 'tar+zstd') {
+  elsif ($format eq 'tar+zstd' | $format eq 'cbt+zstd') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     if ($::cfg_use_tar_zstd_option) {
       push @cmd, maketarcmd($archive, $outdir, $mode, 'f', '--zstd'), @args;
@@ -1319,16 +1319,16 @@ sub multiarchivecmd($$$$@) {
 # Strip extension from the specified file.
 sub stripext($) {
   my ($file) = @_;
-  return $file if ($file =~ s/(\.tar\.bz2|\.tbz2)$//);
-  return $file if ($file =~ s/(\.tar\.bz|\.tbz)$//);
-  return $file if ($file =~ s/(\.tar\.gz|\.tgz)$//);
-  return $file if ($file =~ s/(\.tar\.xz|\.txz)$//);
-  return $file if ($file =~ s/(\.tar\.Z|\.tZ)$//);
-  return $file if ($file =~ s/(\.tar\.7z|\.t7z)$//);
-  return $file if ($file =~ s/(\.tar\.lzma|\.tlzma)$//);
-  return $file if ($file =~ s/(\.tar\.lzo|\.lzo)$//);
-  return $file if ($file =~ s/(\.tar\.lz|\.lz)$//);
-  return $file if ($file =~ s/(\.tar\.zst|\.tzst)$//);
+  return $file if ($file =~ s/(\.(tar|cbt)\.bz2|\.tbz2)$//);
+  return $file if ($file =~ s/(\.(tar|cbt)\.bz|\.tbz)$//);
+  return $file if ($file =~ s/(\.(tar|cbt)\.gz|\.tgz)$//);
+  return $file if ($file =~ s/(\.(tar|cbt)\.xz|\.txz)$//);
+  return $file if ($file =~ s/(\.(tar|cbt)\.Z|\.tZ)$//);
+  return $file if ($file =~ s/(\.(tar|cbt)\.7z|\.t7z)$//);
+  return $file if ($file =~ s/(\.(tar|cbt)\.lzma|\.tlzma)$//);
+  return $file if ($file =~ s/(\.(tar|cbt)\.lzo|\.lzo)$//);
+  return $file if ($file =~ s/(\.(tar|cbt)\.lz|\.lz)$//);
+  return $file if ($file =~ s/(\.(tar|cbt)\.zst|\.tzst)$//);
   return $file if ($file =~ s/\.(tar|cbt)$//);
   return $file if ($file =~ s/\.bz2$//);
   return $file if ($file =~ s/\.bz$//);
@@ -1369,6 +1369,16 @@ sub formatext($) {
   return '.tar.Z'    if $format eq 'tar+compress';
   return '.tar.zst'  if $format eq 'tar+zstd';
   return '.tar'      if $format eq 'tar';
+  return '.cbt.bz2'  if $format eq 'cbt+bzip2';
+  return '.cbt.gz'   if $format eq 'cbt+gzip';
+  return '.cbt.bz'   if $format eq 'cbt+bzip';
+  return '.cbt.7z'   if $format eq 'cbt+7z';
+  return '.cbt.lzo'  if $format eq 'cbt+lzop';
+  return '.cbt.lzma' if $format eq 'cbt+lzma';
+  return '.cbt.lz'   if $format eq 'cbt+lzip';
+  return '.cbt.xz'   if $format eq 'cbt+xz';
+  return '.cbt.Z'    if $format eq 'cbt+compress';
+  return '.cbt.zst'  if $format eq 'cbt+zstd';
   return '.cbt'      if $format eq 'cbt';
   return '.bz2'      if $format eq 'bzip2';
   return '.lzma'     if $format eq 'lzma';
@@ -1481,6 +1491,16 @@ sub findformat($$) {
     ['tar+lzop',       qr/(\.tar\.lzo|\.tzo)$/],
     ['tar+xz',         qr/(\.tar\.xz|\.txz)$/],
     ['tar+zstd',       qr/(\.tar\.zst|\.tzst)$/],
+    ['cbt+7z',         qr/(\.cbt\.7z|\.t7z)$/],
+    ['cbt+bzip',       qr/(\.cbt\.bz|\.tbz)$/],
+    ['cbt+bzip2',      qr/(\.cbt\.bz2|\.tbz2)$/],
+    ['cbt+compress',   qr/(\.cbt\.[zZ]|\.t[zZ])$/],
+    ['cbt+gzip',       qr/(\.cbt\.gz|\.tgz)$/],
+    ['cbt+lzip',       qr/(\.cbt\.lz|\.tlz)$/],
+    ['cbt+lzma',       qr/(\.cbt\.lzma|\.tlzma)$/],
+    ['cbt+lzop',       qr/(\.cbt\.lzo|\.tzo)$/],
+    ['cbt+xz',         qr/(\.cbt\.xz|\.txz)$/],
+    ['cbt+zstd',       qr/(\.cbt\.zst|\.tzst)$/],
 
     ['7z',             qr/\.7z$/],
     ['ace',            qr/\.ace$/],
