@@ -1548,11 +1548,21 @@ sub findformat($$) {
         warn "$::basename: ".quote($file).": format not known, identifying using file\n";
                         }
     }
-    my @cmd = ($::cfg_path_file, '-b', '-L', '-z', '--', $file);
+    my $use_uncompress = 1;
+  file_command:
+    my @cmd = ($use_uncompress ? ($::cfg_path_file, '-b', '-L', '-z', '--', $file)
+                               : ($::cfg_path_file, '-b', '-L', '--', $file));
     $spec = backticks(@cmd);
     if (!defined $spec) {
       warn "$::basename: $::errmsg\n";
       return;
+    }
+    if ($? == 31) {
+      # file sometimes crashes with invalid system call error with -z (--uncompress) flag
+      # https://unix.stackexchange.com/questions/634966/invalid-system-call-error-when-executing-file-command
+      warn "$::basename: ".quote($::cfg_path_file)." made invalid system call with -z (--uncompress) flag. Retrying without it\n";
+      $use_uncompress = 0;
+      goto file_command;
     }
     if ($? & 0xFF != 0) {
       warn "$::basename: ".quote($::cfg_path_file).": abnormal exit\n";
