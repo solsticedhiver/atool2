@@ -565,7 +565,7 @@ sub runcmds($$$;@) {
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
   }
-  elsif ($format eq 'tar') {
+  elsif ($format eq 'tar' || $format eq 'cbt') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     push @cmd, maketarcmd($archive, $outdir, $mode, 'f'), @args;
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
@@ -588,7 +588,7 @@ sub runcmds($$$;@) {
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 1, 0, \@args, @cmd);
   }
-  elsif ($format eq 'jar' || $format eq 'zip') {
+  elsif ($format eq 'jar' || $format eq 'zip' || $format eq 'cbz') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     if ($mode eq 'add') {
       push @cmd, $::cfg_path_zip, '-r';
@@ -606,7 +606,7 @@ sub runcmds($$$;@) {
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 0, 0, \@args, @cmd);
   }
-  elsif ($format eq 'rar') {
+  elsif ($format eq 'rar' || $format eq 'cbr') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     if ($mode eq 'add' || $::cfg_use_rar_for_unpack) {
       push @cmd, $::cfg_path_rar;
@@ -626,7 +626,7 @@ sub runcmds($$$;@) {
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 0, 0, \@args, @cmd);
   }
-  elsif ($format eq '7z') {
+  elsif ($format eq '7z' || $format eq 'cb7') {
     # 7z has the -so option for writing data to stdout, but it doesn't
     # write data to terminal even if the file is designed to be
     # read in a terminal...
@@ -687,7 +687,7 @@ sub runcmds($$$;@) {
     @cmd = handle_empty_add(@cmd) if ($mode eq 'add' && @args == 0);
     return multiarchivecmd($archive, $outdir, $mode, 0, 0, \@args, @cmd);
   }
-  elsif ($format eq 'ace') {
+  elsif ($format eq 'ace' || $format eq 'cba') {
     return undef if ($mode eq 'extract' && !defined ($outdir = makeoutdir()));
     push @cmd, $::cfg_path_unace;
     if ($mode eq 'add' || $mode eq 'cat') {
@@ -1329,20 +1329,20 @@ sub stripext($) {
   return $file if ($file =~ s/(\.tar\.lzo|\.lzo)$//);
   return $file if ($file =~ s/(\.tar\.lz|\.lz)$//);
   return $file if ($file =~ s/(\.tar\.zst|\.tzst)$//);
-  return $file if ($file =~ s/\.tar$//);
+  return $file if ($file =~ s/\.(tar|cbt)$//);
   return $file if ($file =~ s/\.bz2$//);
   return $file if ($file =~ s/\.bz$//);
   return $file if ($file =~ s/\.lz$//);
   return $file if ($file =~ s/\.gz$//);
-  return $file if ($file =~ s/\.zip$//);
-  return $file if ($file =~ s/\.7z$//);
+  return $file if ($file =~ s/\.(zip|cbz)$//);
+  return $file if ($file =~ s/\.(7z|cb7)$//);
   return $file if ($file =~ s/\.alz$//);
   return $file if ($file =~ s/\.jar$//);
   return $file if ($file =~ s/\.war$//);
   return $file if ($file =~ s/\.Z$//);
-  return $file if ($file =~ s/\.rar$//);
+  return $file if ($file =~ s/\.(rar|cbr)$//);
   return $file if ($file =~ s/\.(lha|lzh)$//);
-  return $file if ($file =~ s/\.ace$//);
+  return $file if ($file =~ s/\.(ace|cba)$//);
   return $file if ($file =~ s/\.arj$//);
   return $file if ($file =~ s/\.a$//);
   return $file if ($file =~ s/\.lzma$//);
@@ -1369,9 +1369,11 @@ sub formatext($) {
   return '.tar.Z'    if $format eq 'tar+compress';
   return '.tar.zst'  if $format eq 'tar+zstd';
   return '.tar'      if $format eq 'tar';
+  return '.cbt'      if $format eq 'cbt';
   return '.bz2'      if $format eq 'bzip2';
   return '.lzma'     if $format eq 'lzma';
   return '.7z'       if $format eq '7z';
+  return '.cb7'       if $format eq 'cb7';
   return '.alz'      if $format eq 'alzip';
   return '.bz'       if $format eq 'bzip';
   return '.gz'       if $format eq 'gzip';
@@ -1382,10 +1384,13 @@ sub formatext($) {
   return '.rz'       if $format eq 'rzip';
   return '.lrz'      if $format eq 'lrzip';
   return '.zip'      if $format eq 'zip';
+  return '.cbz'      if $format eq 'cbz';
   return '.jar'      if $format eq 'jar';
   return '.Z'        if $format eq 'compress';
   return '.rar'      if $format eq 'rar';
+  return '.cbr'      if $format eq 'cbr';
   return '.ace'      if $format eq 'ace';
+  return '.cba'      if $format eq 'cba';
   return '.a'        if $format eq 'ar';
   return '.arj'      if $format eq 'arj';
   return '.lha'      if $format eq 'lha';
@@ -1485,6 +1490,11 @@ sub findformat($$) {
     ['arj',            qr/\.arj$/],
     ['bzip',           qr/\.bz$/],
     ['bzip2',          qr/\.bz2$/],
+    ['cb7',            qr/\.cb7$/],
+    ['cba',            qr/\.cba$/],
+    ['cbr',            qr/\.cbr$/],
+    ['cbt',            qr/\.cbt$/],
+    ['cbz',            qr/\.cbz$/],
     ['cab',            qr/\.cab$/],
     ['compress',       qr/\.[zZ]$/],
     ['cpio',           qr/\.cpio$/],
