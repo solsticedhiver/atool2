@@ -1591,7 +1591,7 @@ sub findformat($$) {
       warn "$::basename: $::errmsg\n";
       return;
     }
-    if ($? == 31) {
+    if ($use_uncompress && $? == 31) {
       # file sometimes crashes with invalid system call error with -z (--uncompress) flag
       # https://unix.stackexchange.com/questions/634966/invalid-system-call-error-when-executing-file-command
       warn "$::basename: ".quote($::cfg_path_file)." made invalid system call with -z (--uncompress) flag. Retrying without it\n";
