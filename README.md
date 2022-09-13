@@ -1,4 +1,4 @@
-# atool
+# atool2
 [atool][1] with support for **zstd**
 
 Given that the last release of *atool* is from *2012*, and that the maintainer is not reachable, I have created this "fork" to bring support for **zstd** into *atool*.
