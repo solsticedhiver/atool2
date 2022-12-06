@@ -72,10 +72,10 @@ sub issingleformat($);
 sub repack_archive($$$$);
 sub set_config_option($$$);
 
-$::SYSCONFDIR = '/usr/local/etc'; # This line is automatically updated by make
-$::PACKAGE = 'atool'; # This line is automatically updated by make
-$::VERSION = '0.39.0'; # This line is automatically updated by make
-$::BUG_URL = 'https://github.com/solsticedhiver/atool/issues'; # This line is automatically updated by make
+$::SYSCONFDIR = '@sysconfdir@'; # This line is automatically updated by meson
+$::PACKAGE = '@package_name@'; # This line is automatically updated by meson
+$::VERSION = '@package_version@'; # This line is automatically updated by meson
+$::BUG_URL = '@package_bugreport@'; # This line is automatically updated by meson
 $::PROGRAM = $::PACKAGE;
 
 # Configuration options and their built-in defaults

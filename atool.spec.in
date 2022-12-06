@@ -1,5 +1,5 @@
-%define package @PACKAGE_TARNAME@
-%define version @PACKAGE_VERSION@
+%define package @package_tarname@
+%define version @package_version@
 %define release 1
 
 Summary:	A script for managing file archives of various types.
